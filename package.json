@@ -1,0 +1,40 @@
+{
+  "name": "habe",
+  "version": "1.0.4",
+  "main": "dist/index.js",
+  "author": {
+    "name": "kyaruary",
+    "email": "kyaruary@gmail.com"
+  },
+  "maintainers": [
+    "kyaruary"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "test": "nodemon test/test.ts",
+    "build": "rm -rf dist & tsc"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "koa": "^2.13.0",
+    "koa-body-parser": "^1.1.2",
+    "koa-cookie": "^1.0.0",
+    "koa-router": "^9.4.0",
+    "koa-session": "^6.0.0",
+    "koa-static": "^5.0.0",
+    "path-to-regexp": "^6.1.0",
+    "reflect-metadata": "^0.1.13",
+    "uuid": "^8.3.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.11.3",
+    "@types/koa-router": "^7.4.1",
+    "@types/koa-session": "^5.10.2",
+    "@types/koa-static": "^4.0.1",
+    "@types/node": "^14.0.27",
+    "@types/path-to-regexp": "^1.7.0",
+    "@types/uuid": "^8.3.0"
+  }
+}
