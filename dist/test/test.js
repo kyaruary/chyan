@@ -8,12 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Hello = void 0;
 const lib_1 = require("../lib");
 let Hello = class Hello {
     get() {
         return "123";
+    }
+    post(body) {
+        console.log(body);
+        return "ok";
     }
 };
 __decorate([
@@ -22,6 +29,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], Hello.prototype, "get", null);
+__decorate([
+    lib_1.Post(),
+    __param(0, lib_1.Body("phone")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], Hello.prototype, "post", null);
 Hello = __decorate([
     lib_1.Controller()
 ], Hello);

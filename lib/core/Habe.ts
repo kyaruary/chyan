@@ -1,4 +1,4 @@
-import bodyParser from "koa-body-parser";
+import bodyParser from "koa-bodyparser";
 import "reflect-metadata";
 import { Utils } from "../utils";
 import Application from "koa";

@@ -11,13 +11,14 @@ class RouterUtils {
     static async add(r) {
         const fullPath = this.generateRouterPath(r.prefix, r.actionDescriptor.suffix);
         const time = new Date();
-        console.log(`*** [${time.getFullYear()}/${time.getMonth() + 1}/${time.getDate()}/${time.getHours()}:${time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()}:${time.getSeconds()}] 注入路由 ${fullPath} ,host: ${r.actionDescriptor.hostName}@${r.actionDescriptor.key}`);
+        console.log(`*** [${time.getFullYear()}/${time.getMonth() + 1}/${time.getDate()}/${time.getHours()}:${time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()}:${time.getSeconds()}] 注入路由 ${r.actionDescriptor.type}/${fullPath} ,host: ${r.actionDescriptor.hostName}@${r.actionDescriptor.key}`);
         const method = r.actionDescriptor.type.toLowerCase();
         router[method](fullPath, async (c, next) => {
             const { args } = this.injectArugments(c, r, next);
             // valdiate
             const result = await Reflect.apply(r.actionDescriptor.callback, r.host, [...args]);
             if (result !== undefined) {
+                c.response.status = 200;
                 c.body = result;
             }
         });
@@ -30,13 +31,13 @@ class RouterUtils {
     }
     static injectArugments(c, r, next) {
         const args = [];
-        const { body, session, cookie, query, params } = c;
+        const { session, cookie, query, params } = c;
         const argumentsMetadataArr = [];
         for (const arg of r.args) {
             let object;
             switch (arg.type) {
                 case ArgumentsTypes_1.ArgumentsTypes.BODY:
-                    object = arg.field ? body[arg.field] : body;
+                    object = arg.field ? c.request.body?.[arg.field] : c.request.body;
                     break;
                 case ArgumentsTypes_1.ArgumentsTypes.COOKIE:
                     object = cookie;

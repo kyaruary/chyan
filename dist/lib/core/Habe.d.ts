@@ -1,3 +1,4 @@
+/// <reference types="koa-bodyparser" />
 /// <reference types="koa-session" />
 import "reflect-metadata";
 import Application from "koa";

@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Habe = void 0;
-const koa_body_parser_1 = __importDefault(require("koa-body-parser"));
+const koa_bodyparser_1 = __importDefault(require("koa-bodyparser"));
 require("reflect-metadata");
 const utils_1 = require("../utils");
 const koa_1 = __importDefault(require("koa"));
@@ -108,7 +108,7 @@ class Habe {
         });
         this.app.keys = ["session"];
         const SessionConfig = {};
-        this.app.use(koa_body_parser_1.default());
+        this.app.use(koa_bodyparser_1.default());
         this.app.use(koa_cookie_1.default());
         this.app.use(koa_session_1.default(SessionConfig, this.app));
         for (const m of this.middlewares) {
