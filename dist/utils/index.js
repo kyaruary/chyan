@@ -127,20 +127,47 @@ var Utils = /** @class */ (function () {
                         return [3 /*break*/, 15];
                     case 14:
                         e_2 = _b.sent();
-                        console.log("not fount");
+                        console.log(e_2, "dynamic import failed");
                         return [3 /*break*/, 15];
                     case 15: return [2 /*return*/];
                 }
             });
         });
     };
-    Utils.parseController = function (controller) {
-        return [];
+    /**
+     * *\/contoller
+     * ** contoller
+     * contollers/ **
+     * *Controller
+     * @param controller
+     */
+    Utils.parseControllersPath = function (all) {
+        var e_3, _a;
+        var controllers = all.split(",");
+        var paths = [];
+        try {
+            for (var controllers_1 = __values(controllers), controllers_1_1 = controllers_1.next(); !controllers_1_1.done; controllers_1_1 = controllers_1.next()) {
+                var controller = controllers_1_1.value;
+                paths.push(this.handleControllerPath(controller));
+            }
+        }
+        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+        finally {
+            try {
+                if (controllers_1_1 && !controllers_1_1.done && (_a = controllers_1.return)) _a.call(controllers_1);
+            }
+            finally { if (e_3) throw e_3.error; }
+        }
+        return paths;
+    };
+    Utils.handleControllerPath = function (controller) {
+        controller = controller.trim();
+        return controller;
     };
     Utils.RecursiveImport = function (dir) {
         return __awaiter(this, void 0, void 0, function () {
-            var files, files_1, files_1_1, file, e_3_1;
-            var e_3, _a;
+            var files, files_1, files_1_1, file, e_4_1;
+            var e_4, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, fs_1.promises.readdir(dir)];
@@ -170,14 +197,14 @@ var Utils = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 9: return [3 /*break*/, 12];
                     case 10:
-                        e_3_1 = _b.sent();
-                        e_3 = { error: e_3_1 };
+                        e_4_1 = _b.sent();
+                        e_4 = { error: e_4_1 };
                         return [3 /*break*/, 12];
                     case 11:
                         try {
                             if (files_1_1 && !files_1_1.done && (_a = files_1.return)) _a.call(files_1);
                         }
-                        finally { if (e_3) throw e_3.error; }
+                        finally { if (e_4) throw e_4.error; }
                         return [7 /*endfinally*/];
                     case 12: return [2 /*return*/];
                 }

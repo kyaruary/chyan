@@ -4,7 +4,7 @@ import { config } from "dotenv";
 import { EnvConfig } from "./EnvConfig";
 import * as Uuid from "uuid";
 import { RouterUtils } from "./router";
-
+import { resolve } from "path";
 export class MetaDataStorage {
   private static instacne: MetaDataStorage;
   static getMetaDataStroage() {
@@ -46,7 +46,7 @@ export class MetaDataStorage {
   private actionDescriptors: Map<string, ActionDescriptor[]> = new Map<string, ActionDescriptor[]>();
   private argumentsDescriptors: Map<string, ArgumentsDescriptor[]> = new Map();
   private entityDescriptors: EntityDescriptor[] = [];
-  static readonly envConfig: EnvConfig = new EnvConfig(config());
+  static readonly envConfig: EnvConfig = new EnvConfig(config({ path: resolve(process.cwd(), ".env") }).parsed!);
 
   // instantiation storage
   private serviceInstantiationMap: Map<string, object> = new Map<string, object>();

@@ -85,6 +85,7 @@ export class Habe {
     const config = MetaDataStorage.envConfig;
     MetaDataStorage.resolve();
 
+    console.log(config);
     if (config.controllers) {
       await Utils.atuoInject();
     }
