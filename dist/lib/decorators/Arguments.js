@@ -20,15 +20,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Ctx = exports.Files = exports.File = exports.Session = exports.Cookie = exports.Req = exports.Res = exports.NextFc = exports.Params = exports.Query = exports.Body = void 0;
-var metadata_1 = require("../core/metadata");
-var ArgumentsTypes_1 = require("../constant/ArgumentsTypes");
-var Uuid = __importStar(require("uuid"));
-function ArgumentsDecoratorWrapper(type, field) {
-    if (field === void 0) { field = ""; }
+const metadata_1 = require("../core/metadata");
+const ArgumentsTypes_1 = require("../constant/ArgumentsTypes");
+const Uuid = __importStar(require("uuid"));
+function ArgumentsDecoratorWrapper(type, field = "") {
     return function ArgumentsDecorator(target, key, index) {
-        var _a;
-        target.constructor.prototype.id = (_a = target.constructor.prototype.id) !== null && _a !== void 0 ? _a : Uuid.v4();
-        metadata_1.MetaDataStorage.addArgumentsDescriptor({ type: type, field: field, key: key, target: target.constructor.prototype.id, position: index });
+        target.constructor.prototype.id = target.constructor.prototype.id ?? Uuid.v4();
+        metadata_1.MetaDataStorage.addArgumentsDescriptor({ type, field, key, target: target.constructor.prototype.id, position: index });
     };
 }
 function Body(field) {

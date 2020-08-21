@@ -1,7 +1,7 @@
 {
   "name": "habe",
-  "version": "1.0.7",
-  "main": "dist/index.js",
+  "version": "1.0.17",
+  "main": "dist/lib/index.js",
   "author": {
     "name": "kyaruary",
     "email": "kyaruary@gmail.com"

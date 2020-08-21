@@ -1,6 +1,6 @@
 import { Path } from "../@types/types";
 export declare class Utils {
-    static atuoInject(include?: Path[]): Promise<void>;
+    static atuoInject(include: Path[]): Promise<void>;
     /**
      * *\/contoller
      * ** contoller

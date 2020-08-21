@@ -20,9 +20,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Connect = exports.Head = exports.Options = exports.Put = exports.Trace = exports.Delete = exports.Post = exports.Get = void 0;
-var metadata_1 = require("../core/metadata");
-var RouteMethods_1 = require("../constant/RouteMethods");
-var Uuid = __importStar(require("uuid"));
+const metadata_1 = require("../core/metadata");
+const RouteMethods_1 = require("../constant/RouteMethods");
+const Uuid = __importStar(require("uuid"));
 function Get(path) {
     return RouterMethodsFactory(RouteMethods_1.RouteMethod.GET)(path);
 }
@@ -56,18 +56,16 @@ function Connect(path) {
 }
 exports.Connect = Connect;
 function RouterMethodsFactory(type) {
-    return function RouterMethods(path) {
-        if (path === void 0) { path = ""; }
+    return function RouterMethods(path = "") {
         return function GetDecoratorWrapper(target, key, descriptor) {
-            var _a;
-            var argsType = Reflect.getMetadata("design:paramtypes", target, key);
+            const argsType = Reflect.getMetadata("design:paramtypes", target, key);
             // save request method, callback, sub router and target into metadata storage;
-            target.constructor.prototype.id = (_a = target.constructor.prototype.id) !== null && _a !== void 0 ? _a : Uuid.v4();
+            target.constructor.prototype.id = target.constructor.prototype.id ?? Uuid.v4();
             metadata_1.MetaDataStorage.addActionDescriptor({
                 target: target.constructor.prototype.id,
                 callback: descriptor.value,
-                type: type,
-                key: key,
+                type,
+                key,
                 suffix: path,
                 hostName: target.constructor.name,
                 argsType: argsType,

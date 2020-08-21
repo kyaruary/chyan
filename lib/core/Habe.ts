@@ -83,12 +83,11 @@ export class Habe {
 
   async run() {
     const config = MetaDataStorage.envConfig;
-    MetaDataStorage.resolve();
-
-    console.log(config);
     if (config.controllers) {
-      await Utils.atuoInject();
+      await Utils.atuoInject([config.controllers]);
     }
+
+    MetaDataStorage.resolve();
 
     this.app.use(async (ctx, next) => {
       try {

@@ -19,27 +19,27 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Controller = void 0;
-var metadata_1 = require("../core/metadata");
+exports.Service = void 0;
+const types_1 = require("../@types/types");
 require("reflect-metadata");
-var Uuid = __importStar(require("uuid"));
-function Controller(prefix) {
-    return function ControllerDecorator(target) {
-        var _a, _b;
-        var params = (_a = Reflect.getMetadata("design:paramtypes", target)) !== null && _a !== void 0 ? _a : [];
-        console.log("controller");
-        var args = params.map(function (param) {
-            var _a;
-            param.prototype.id = (_a = param.prototype.id) !== null && _a !== void 0 ? _a : Uuid.v4();
+const metadata_1 = require("../core/metadata");
+const Uuid = __importStar(require("uuid"));
+function Service() {
+    return function ServiceDecorator(target) {
+        const params = Reflect.getMetadata("design:paramtypes", target) ?? [];
+        const args = params.map((param) => {
+            param.prototype.id = param.prototype.id ?? Uuid.v4();
             return param.prototype.id;
         });
-        var cd = {
-            target: (_b = target.prototype.id) !== null && _b !== void 0 ? _b : Uuid.v4(),
+        target.prototype.id = target.prototype.id ?? Uuid.v4();
+        const sd = {
+            target: target.prototype.id,
             proto: target,
-            prefix: prefix !== null && prefix !== void 0 ? prefix : "",
-            args: args,
+            priority: params.length,
+            args,
+            type: types_1.InjectorType.Service,
         };
-        metadata_1.MetaDataStorage.addControllerDescriptor(cd);
+        metadata_1.MetaDataStorage.addServiceDescriptor(sd);
     };
 }
-exports.Controller = Controller;
+exports.Service = Service;

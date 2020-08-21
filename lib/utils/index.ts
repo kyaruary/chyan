@@ -4,11 +4,11 @@ import { promises as fs } from "fs";
 const promises: Promise<void>[] = [];
 
 export class Utils {
-  static async atuoInject(include?: Path[]) {
-    const include_path = include ?? ["/"];
+  static async atuoInject(include: Path[]) {
+    const include_path = include;
     try {
       for (const relative_path of include_path) {
-        const abs_path = path.resolve(__dirname, relative_path);
+        const abs_path = path.resolve(process.cwd(), relative_path);
         if ((await fs.stat(abs_path)).isFile()) {
           await this.DynamicImport(abs_path);
         } else {
@@ -45,10 +45,11 @@ export class Utils {
   static async RecursiveImport(dir: Path) {
     const files = await fs.readdir(dir);
     for (const file of files) {
-      if ((await fs.stat(file)).isDirectory()) {
-        await this.RecursiveImport(path.resolve(dir, file));
+      const filePath = path.resolve(dir, file);
+      if ((await fs.stat(filePath)).isDirectory()) {
+        await this.RecursiveImport(filePath);
       } else {
-        await this.DynamicImport(path.resolve(dir, file));
+        await this.DynamicImport(filePath);
       }
     }
   }

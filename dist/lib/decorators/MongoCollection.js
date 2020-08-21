@@ -20,12 +20,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoCollection = void 0;
-var Uuid = __importStar(require("uuid"));
-var metadata_1 = require("../core/metadata");
+const Uuid = __importStar(require("uuid"));
+const metadata_1 = require("../core/metadata");
 function MongoCollection(collectionName) {
     return function CollectionDecorator(target) {
-        var _a;
-        target.prototype.id = (_a = target.prototype.id) !== null && _a !== void 0 ? _a : Uuid.v4();
+        target.prototype.id = target.prototype.id ?? Uuid.v4();
         metadata_1.MetaDataStorage.addEntityDescriptor({ name: collectionName, target: target.prototype.id });
     };
 }
