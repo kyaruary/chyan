@@ -18,6 +18,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -34,6 +43,7 @@ const koa_session_1 = __importDefault(require("koa-session"));
 const koa_static_1 = __importDefault(require("koa-static"));
 const types_1 = require("../@types/types");
 const Uuid = __importStar(require("uuid"));
+const middleware_storage_1 = require("./middleware-storage");
 class Habe {
     constructor(app) {
         this.app = app;
@@ -50,10 +60,10 @@ class Habe {
         return this.habe;
     }
     u(m, type) {
-        m.prototype.id = m.prototype.id ?? Uuid.v4();
-        const params = Reflect.getMetadata("design:paramtypes", m) ?? [];
+        m.prototype.id = m.prototype.id || Uuid.v4();
+        const params = Reflect.getMetadata("design:paramtypes", m) || [];
         const args = params.map((param) => {
-            param.prototype.id = param.prototype.id ?? Uuid.v4();
+            param.prototype.id = param.prototype.id || Uuid.v4();
             return param.prototype.id;
         });
         const des = {
@@ -92,35 +102,45 @@ class Habe {
     useMiddleware(middleware) {
         this.middlewares.push(middleware);
     }
-    async run() {
-        const config = metadata_1.MetaDataStorage.envConfig;
-        if (config.controllers) {
-            await utils_1.Utils.atuoInject([config.controllers]);
-        }
-        metadata_1.MetaDataStorage.resolve();
-        this.app.use(async (ctx, next) => {
-            try {
-                await next();
+    run() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const config = metadata_1.MetaDataStorage.envConfig;
+            if (config.controllers) {
+                yield utils_1.Utils.atuoInject([config.controllers]);
             }
-            catch (e) {
-                console.log(e, "exception filter");
+            metadata_1.MetaDataStorage.resolve();
+            this.app.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
+                try {
+                    yield next();
+                }
+                catch (e) {
+                    for (const filter of middleware_storage_1.MiddlewareStorage.filters) {
+                        filter.catch(e, ctx);
+                    }
+                    console.log(e, "exception filter");
+                }
+                finally {
+                    for (const looger of middleware_storage_1.MiddlewareStorage.loggers) {
+                        looger.log(ctx);
+                    }
+                }
+            }));
+            this.app.keys = ["session"];
+            const SessionConfig = {};
+            this.app.use(koa_bodyparser_1.default());
+            this.app.use(koa_cookie_1.default());
+            this.app.use(koa_session_1.default(SessionConfig, this.app));
+            for (const m of this.middlewares) {
+                this.app.use(m);
             }
-        });
-        this.app.keys = ["session"];
-        const SessionConfig = {};
-        this.app.use(koa_bodyparser_1.default());
-        this.app.use(koa_cookie_1.default());
-        this.app.use(koa_session_1.default(SessionConfig, this.app));
-        for (const m of this.middlewares) {
-            this.app.use(m);
-        }
-        const router = router_1.RouterUtils.getRouter();
-        this.app.use(router.routes()).use(router.allowedMethods());
-        if (this.useStaticServer) {
-            this.app.use(koa_static_1.default(this.staticRoot, this.staticOption));
-        }
-        this.app.listen(config.port, () => {
-            console.log(`server is running on  http://localhost:${config.port}`);
+            const router = router_1.RouterUtils.getRouter();
+            this.app.use(router.routes()).use(router.allowedMethods());
+            if (this.useStaticServer) {
+                this.app.use(koa_static_1.default(this.staticRoot, this.staticOption));
+            }
+            this.app.listen(config.port, () => {
+                console.log(`server is running on  http://0.0.0.0:${config.port}`);
+            });
         });
     }
 }

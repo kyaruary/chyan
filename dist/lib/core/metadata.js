@@ -18,6 +18,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MetaDataStorage = void 0;
 const types_1 = require("../@types/types");
@@ -27,6 +36,7 @@ const EnvConfig_1 = require("./EnvConfig");
 const Uuid = __importStar(require("uuid"));
 const router_1 = require("./router");
 const path_1 = require("path");
+const middleware_storage_1 = require("./middleware-storage");
 class MetaDataStorage {
     constructor() {
         // descriptor metadata storage
@@ -52,11 +62,11 @@ class MetaDataStorage {
         MetaDataStorage.getMetaDataStroage().controllerDescriptors.push(cd);
     }
     static addActionDescriptor(rmd) {
-        const prev = MetaDataStorage.getMetaDataStroage().actionDescriptors.get(rmd.target) ?? [];
+        const prev = MetaDataStorage.getMetaDataStroage().actionDescriptors.get(rmd.target) || [];
         MetaDataStorage.getMetaDataStroage().actionDescriptors.set(rmd.target, [...prev, rmd]);
     }
     static addArgumentsDescriptor(ad) {
-        const prev = this.getMetaDataStroage().argumentsDescriptors.get(ad.target) ?? [];
+        const prev = this.getMetaDataStroage().argumentsDescriptors.get(ad.target) || [];
         this.getMetaDataStroage().argumentsDescriptors.set(ad.target, [...prev, ad]);
     }
     static addEntityDescriptor(ed) {
@@ -66,11 +76,12 @@ class MetaDataStorage {
         this.getMetaDataStroage().serviceDescriptors.enqueue(m);
     }
     initializeController() {
+        var _a;
         for (const cd of this.controllerDescriptors) {
             const instance = this.instantiationController(cd.proto, cd.args);
-            const routers = this.actionDescriptors.get(cd.target) ?? [];
+            const routers = this.actionDescriptors.get(cd.target) || [];
             for (const router of routers) {
-                const args = this.argumentsDescriptors.get(cd.target)?.filter((arg) => arg.key === router.key) ?? [];
+                const args = ((_a = this.argumentsDescriptors.get(cd.target)) === null || _a === void 0 ? void 0 : _a.filter((arg) => arg.key === router.key)) || [];
                 router_1.RouterUtils.add({ actionDescriptor: router, prefix: cd.prefix, args, host: instance });
             }
             // RouterStorage.printRouter();
@@ -78,7 +89,7 @@ class MetaDataStorage {
     }
     injectConfig() {
         const proto = Reflect.getPrototypeOf(MetaDataStorage.envConfig);
-        proto.id = proto.id ?? Uuid.v4();
+        proto.id = proto.id || Uuid.v4();
         this.serviceInstantiationMap.set(proto.id, MetaDataStorage.envConfig);
         return MetaDataStorage.envConfig;
     }
@@ -93,7 +104,7 @@ class MetaDataStorage {
             });
             const instance = Reflect.construct(s.proto, args);
             if (s.type === types_1.InjectorType.Middleware) {
-                // MiddlewareStorage.add(instance, s.middlewareTypes!);
+                middleware_storage_1.MiddlewareStorage.add(instance, s.middlewareTypes);
             }
             else {
                 this.serviceInstantiationMap.set(s.target, instance);
@@ -121,19 +132,21 @@ class MetaDataStorage {
     //     }
     //   }
     // }
-    static async resolve() {
-        const instacne = MetaDataStorage.getMetaDataStroage();
-        instacne.injectConfig();
-        // console.log(instacne.controllerDescriptor);
-        // console.log(instacne.routerMethodDescriptor);
-        // console.log(instacne.serviceDescriptor);
-        // 首先连接数据库
-        // instacne.initDatabase();
-        // init entities undo
-        instacne.instantiationServices();
-        // console.log(instacne.serviceInstantiationMap);
-        // init controllers doing
-        instacne.initializeController();
+    static resolve() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const instacne = MetaDataStorage.getMetaDataStroage();
+            instacne.injectConfig();
+            // console.log(instacne.controllerDescriptor);
+            // console.log(instacne.routerMethodDescriptor);
+            // console.log(instacne.serviceDescriptor);
+            // 首先连接数据库
+            // instacne.initDatabase();
+            // init entities undo
+            instacne.instantiationServices();
+            // console.log(instacne.serviceInstantiationMap);
+            // init controllers doing
+            instacne.initializeController();
+        });
     }
 }
 exports.MetaDataStorage = MetaDataStorage;

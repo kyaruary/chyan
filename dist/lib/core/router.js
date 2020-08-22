@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -8,19 +17,21 @@ const ArgumentsTypes_1 = require("../constant/ArgumentsTypes");
 const koa_router_1 = __importDefault(require("koa-router"));
 const router = new koa_router_1.default();
 class RouterUtils {
-    static async add(r) {
-        const fullPath = this.generateRouterPath(r.prefix, r.actionDescriptor.suffix);
-        const time = new Date();
-        console.log(`*** [${time.getFullYear()}/${time.getMonth() + 1}/${time.getDate()}/${time.getHours()}:${time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()}:${time.getSeconds()}] 注入路由 ${r.actionDescriptor.type}/${fullPath} ,host: ${r.actionDescriptor.hostName}@${r.actionDescriptor.key}`);
-        const method = r.actionDescriptor.type.toLowerCase();
-        router[method](fullPath, async (c, next) => {
-            const { args } = this.injectArugments(c, r, next);
-            // valdiate
-            const result = await Reflect.apply(r.actionDescriptor.callback, r.host, [...args]);
-            if (result !== undefined) {
-                c.response.status = 200;
-                c.body = result;
-            }
+    static add(r) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const fullPath = this.generateRouterPath(r.prefix, r.actionDescriptor.suffix);
+            const time = new Date();
+            console.log(`*** [${time.getFullYear()}/${time.getMonth() + 1}/${time.getDate()}/${time.getHours()}:${time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()}:${time.getSeconds()}] 注入路由 ${r.actionDescriptor.type}/${fullPath} ,host: ${r.actionDescriptor.hostName}@${r.actionDescriptor.key}`);
+            const method = r.actionDescriptor.type.toLowerCase();
+            router[method](fullPath, (c, next) => __awaiter(this, void 0, void 0, function* () {
+                const { args } = this.injectArugments(c, r, next);
+                // valdiate
+                const result = yield Reflect.apply(r.actionDescriptor.callback, r.host, [...args]);
+                if (result !== undefined) {
+                    c.response.status = 200;
+                    c.body = result;
+                }
+            }));
         });
     }
     static formatRouter(url) {
@@ -30,6 +41,7 @@ class RouterUtils {
         return this.formatRouter(`/${prefix}/${sub_path}`.replace(/[/]{2,}/g, "/"));
     }
     static injectArugments(c, r, next) {
+        var _a;
         const args = [];
         const { session, cookie, query, params } = c;
         const argumentsMetadataArr = [];
@@ -37,7 +49,7 @@ class RouterUtils {
             let object;
             switch (arg.type) {
                 case ArgumentsTypes_1.ArgumentsTypes.BODY:
-                    object = arg.field ? c.request.body?.[arg.field] : c.request.body;
+                    object = arg.field ? (_a = c.request.body) === null || _a === void 0 ? void 0 : _a[arg.field] : c.request.body;
                     break;
                 case ArgumentsTypes_1.ArgumentsTypes.COOKIE:
                     object = cookie;

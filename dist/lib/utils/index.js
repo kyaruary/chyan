@@ -18,6 +18,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -27,23 +36,25 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = require("fs");
 const promises = [];
 class Utils {
-    static async atuoInject(include) {
-        const include_path = include;
-        try {
-            for (const relative_path of include_path) {
-                const abs_path = path_1.default.resolve(process.cwd(), relative_path);
-                if ((await fs_1.promises.stat(abs_path)).isFile()) {
-                    await this.DynamicImport(abs_path);
+    static atuoInject(include) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const include_path = include;
+            try {
+                for (const relative_path of include_path) {
+                    const abs_path = path_1.default.resolve(process.cwd(), relative_path);
+                    if ((yield fs_1.promises.stat(abs_path)).isFile()) {
+                        yield this.DynamicImport(abs_path);
+                    }
+                    else {
+                        yield this.RecursiveImport(abs_path);
+                    }
                 }
-                else {
-                    await this.RecursiveImport(abs_path);
-                }
+                yield Promise.all(promises);
             }
-            await Promise.all(promises);
-        }
-        catch (e) {
-            console.log(e, "dynamic import failed");
-        }
+            catch (e) {
+                console.log(e, "dynamic import failed");
+            }
+        });
     }
     /**
      * *\/contoller
@@ -64,26 +75,30 @@ class Utils {
         controller = controller.trim();
         return controller;
     }
-    static async RecursiveImport(dir) {
-        const files = await fs_1.promises.readdir(dir);
-        for (const file of files) {
-            const filePath = path_1.default.resolve(dir, file);
-            if ((await fs_1.promises.stat(filePath)).isDirectory()) {
-                await this.RecursiveImport(filePath);
+    static RecursiveImport(dir) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const files = yield fs_1.promises.readdir(dir);
+            for (const file of files) {
+                const filePath = path_1.default.resolve(dir, file);
+                if ((yield fs_1.promises.stat(filePath)).isDirectory()) {
+                    yield this.RecursiveImport(filePath);
+                }
+                else {
+                    yield this.DynamicImport(filePath);
+                }
             }
-            else {
-                await this.DynamicImport(filePath);
-            }
-        }
+        });
     }
-    static async DynamicImport(file) {
-        const s = file.split(".");
-        const extension = s[s.length - 1];
-        const isTsFile = extension === "ts" || extension === "tsx";
-        if (!isTsFile) {
-            return;
-        }
-        promises.push(Promise.resolve().then(() => __importStar(require(`${file}`))));
+    static DynamicImport(file) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const s = file.split(".");
+            const extension = s[s.length - 1];
+            const isTsFile = extension === "ts" || extension === "tsx";
+            if (!isTsFile) {
+                return;
+            }
+            promises.push(Promise.resolve().then(() => __importStar(require(`${file}`))));
+        });
     }
 }
 exports.Utils = Utils;

@@ -24,7 +24,7 @@ const Uuid = __importStar(require("uuid"));
 const metadata_1 = require("../core/metadata");
 function MongoCollection(collectionName) {
     return function CollectionDecorator(target) {
-        target.prototype.id = target.prototype.id ?? Uuid.v4();
+        target.prototype.id = target.prototype.id || Uuid.v4();
         metadata_1.MetaDataStorage.addEntityDescriptor({ name: collectionName, target: target.prototype.id });
     };
 }

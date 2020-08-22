@@ -4,7 +4,7 @@ import * as Uuid from "uuid";
 
 function ArgumentsDecoratorWrapper(type: ArgumentsTypes, field: string = "") {
   return function ArgumentsDecorator(target: Object, key: string, index: number) {
-    target.constructor.prototype.id = target.constructor.prototype.id ?? Uuid.v4();
+    target.constructor.prototype.id = target.constructor.prototype.id || Uuid.v4();
     MetaDataStorage.addArgumentsDescriptor({ type, field, key, target: target.constructor.prototype.id, position: index });
   };
 }

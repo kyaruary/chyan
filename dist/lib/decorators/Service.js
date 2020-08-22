@@ -26,12 +26,12 @@ const metadata_1 = require("../core/metadata");
 const Uuid = __importStar(require("uuid"));
 function Service() {
     return function ServiceDecorator(target) {
-        const params = Reflect.getMetadata("design:paramtypes", target) ?? [];
+        const params = Reflect.getMetadata("design:paramtypes", target) || [];
         const args = params.map((param) => {
-            param.prototype.id = param.prototype.id ?? Uuid.v4();
+            param.prototype.id = param.prototype.id || Uuid.v4();
             return param.prototype.id;
         });
-        target.prototype.id = target.prototype.id ?? Uuid.v4();
+        target.prototype.id = target.prototype.id || Uuid.v4();
         const sd = {
             target: target.prototype.id,
             proto: target,

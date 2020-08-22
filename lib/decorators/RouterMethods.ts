@@ -39,7 +39,7 @@ function RouterMethodsFactory(type: RouteMethod) {
     return function GetDecoratorWrapper(target: Object, key: string, descriptor: PropertyDescriptor) {
       const argsType = Reflect.getMetadata("design:paramtypes", target, key) as Constructor[];
       // save request method, callback, sub router and target into metadata storage;
-      target.constructor.prototype.id = target.constructor.prototype.id ?? Uuid.v4();
+      target.constructor.prototype.id = target.constructor.prototype.id || Uuid.v4();
       MetaDataStorage.addActionDescriptor({
         target: target.constructor.prototype.id,
         callback: descriptor.value,

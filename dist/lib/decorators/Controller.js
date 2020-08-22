@@ -25,15 +25,15 @@ require("reflect-metadata");
 const Uuid = __importStar(require("uuid"));
 function Controller(prefix) {
     return function ControllerDecorator(target) {
-        const params = Reflect.getMetadata("design:paramtypes", target) ?? [];
+        const params = Reflect.getMetadata("design:paramtypes", target) || [];
         const args = params.map((param) => {
-            param.prototype.id = param.prototype.id ?? Uuid.v4();
+            param.prototype.id = param.prototype.id || Uuid.v4();
             return param.prototype.id;
         });
         const cd = {
-            target: target.prototype.id ?? Uuid.v4(),
+            target: target.prototype.id || Uuid.v4(),
             proto: target,
-            prefix: prefix ?? "",
+            prefix: prefix || "",
             args,
         };
         metadata_1.MetaDataStorage.addControllerDescriptor(cd);

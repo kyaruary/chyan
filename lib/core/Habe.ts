@@ -1,7 +1,7 @@
 import bodyParser from "koa-bodyparser";
 import "reflect-metadata";
 import { Utils } from "../utils";
-import Application from "koa";
+import Application, { Context } from "koa";
 import { MetaDataStorage } from "./metadata";
 import { RouterUtils } from "./router";
 import cookie from "koa-cookie";
@@ -9,6 +9,7 @@ import session from "koa-session";
 import serve from "koa-static";
 import { Constructor, MiddlewareTypes, InjectorDescriptor, InjectorType, MiddlewareConstructor, GuardConstructor, InterceptorConstructor, FilterConstructor, PipeConstructor, StaticConstructor, LoggerConstructor } from "../@types/types";
 import * as Uuid from "uuid";
+import { MiddlewareStorage } from "./middleware-storage";
 export class Habe {
   private middlewares: Application.Middleware[] = [];
 
@@ -30,10 +31,10 @@ export class Habe {
   }
 
   private u(m: Constructor, type: MiddlewareTypes) {
-    m.prototype.id = m.prototype.id ?? Uuid.v4();
-    const params = (Reflect.getMetadata("design:paramtypes", m) as Constructor[]) ?? [];
+    m.prototype.id = m.prototype.id || Uuid.v4();
+    const params = (Reflect.getMetadata("design:paramtypes", m) as Constructor[]) || [];
     const args = params.map((param) => {
-      param.prototype.id = param.prototype.id ?? Uuid.v4();
+      param.prototype.id = param.prototype.id || Uuid.v4();
       return param.prototype.id;
     });
     const des: InjectorDescriptor = {
@@ -93,7 +94,14 @@ export class Habe {
       try {
         await next();
       } catch (e) {
+        for (const filter of MiddlewareStorage.filters) {
+          filter.catch(e, ctx as Context);
+        }
         console.log(e, "exception filter");
+      } finally {
+        for (const looger of MiddlewareStorage.loggers) {
+          looger.log(ctx as Context);
+        }
       }
     });
 
@@ -117,7 +125,7 @@ export class Habe {
     }
 
     this.app.listen(config.port, () => {
-      console.log(`server is running on  http://localhost:${config.port}`);
+      console.log(`server is running on  http://0.0.0.0:${config.port}`);
     });
   }
 }

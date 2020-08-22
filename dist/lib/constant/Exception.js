@@ -9,8 +9,8 @@ var Exception;
 class HttpException {
     constructor(status, msg) {
         this.msg = "";
-        this.status = status ?? this.status;
-        this.msg = msg ?? this.msg;
+        this.status = status || this.status;
+        this.msg = msg || this.msg;
     }
 }
 exports.HttpException = HttpException;

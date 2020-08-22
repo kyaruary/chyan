@@ -5,15 +5,15 @@ import * as Uuid from "uuid";
 
 export function Controller(prefix?: string) {
   return function ControllerDecorator(target: Constructor) {
-    const params = (Reflect.getMetadata("design:paramtypes", target) as Constructor[]) ?? [];
+    const params = (Reflect.getMetadata("design:paramtypes", target) as Constructor[]) || [];
     const args = params.map((param) => {
-      param.prototype.id = param.prototype.id ?? Uuid.v4();
+      param.prototype.id = param.prototype.id || Uuid.v4();
       return param.prototype.id;
     });
     const cd: ControllerDescriptor = {
-      target: target.prototype.id ?? Uuid.v4(),
+      target: target.prototype.id || Uuid.v4(),
       proto: target,
-      prefix: prefix ?? "",
+      prefix: prefix || "",
       args,
     };
     MetaDataStorage.addControllerDescriptor(cd);

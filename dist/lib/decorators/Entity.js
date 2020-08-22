@@ -5,7 +5,7 @@
 // // for mongodb
 // export function Entity(name: string) {
 //   return function CollectionDecorator(target: Constructor) {
-//     target.prototype.id = target.prototype.id ?? Uuid.v4();
+//     target.prototype.id = target.prototype.id || Uuid.v4();
 //     MetaDataStorage.addEntityDescriptor({ name, target: target.prototype.id });
 //   };
 // }

@@ -7,8 +7,8 @@ export class HttpException {
   status?: number;
   msg: string = "";
   constructor(status?: number, msg?: string) {
-    this.status = status ?? this.status;
-    this.msg = msg ?? this.msg;
+    this.status = status || this.status;
+    this.msg = msg || this.msg;
   }
 }
 

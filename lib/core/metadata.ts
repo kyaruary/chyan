@@ -5,6 +5,7 @@ import { EnvConfig } from "./EnvConfig";
 import * as Uuid from "uuid";
 import { RouterUtils } from "./router";
 import { resolve } from "path";
+import { MiddlewareStorage } from "./middleware-storage";
 export class MetaDataStorage {
   private static instacne: MetaDataStorage;
   static getMetaDataStroage() {
@@ -23,12 +24,12 @@ export class MetaDataStorage {
   }
 
   static addActionDescriptor(rmd: ActionDescriptor) {
-    const prev = MetaDataStorage.getMetaDataStroage().actionDescriptors.get(rmd.target) ?? [];
+    const prev = MetaDataStorage.getMetaDataStroage().actionDescriptors.get(rmd.target) || [];
     MetaDataStorage.getMetaDataStroage().actionDescriptors.set(rmd.target, [...prev, rmd]);
   }
 
   static addArgumentsDescriptor(ad: ArgumentsDescriptor) {
-    const prev = this.getMetaDataStroage().argumentsDescriptors.get(ad.target) ?? [];
+    const prev = this.getMetaDataStroage().argumentsDescriptors.get(ad.target) || [];
     this.getMetaDataStroage().argumentsDescriptors.set(ad.target, [...prev, ad]);
   }
 
@@ -54,9 +55,9 @@ export class MetaDataStorage {
   private initializeController() {
     for (const cd of this.controllerDescriptors) {
       const instance = this.instantiationController(cd.proto, cd.args);
-      const routers = this.actionDescriptors.get(cd.target) ?? [];
+      const routers = this.actionDescriptors.get(cd.target) || [];
       for (const router of routers) {
-        const args = this.argumentsDescriptors.get(cd.target)?.filter((arg) => arg.key === router.key) ?? [];
+        const args = this.argumentsDescriptors.get(cd.target)?.filter((arg) => arg.key === router.key) || [];
         RouterUtils.add({ actionDescriptor: router, prefix: cd.prefix, args, host: instance });
       }
       // RouterStorage.printRouter();
@@ -65,7 +66,7 @@ export class MetaDataStorage {
 
   injectConfig() {
     const proto = Reflect.getPrototypeOf(MetaDataStorage.envConfig) as any;
-    proto.id = proto.id ?? Uuid.v4();
+    proto.id = proto.id || Uuid.v4();
     this.serviceInstantiationMap.set(proto.id, MetaDataStorage.envConfig);
     return MetaDataStorage.envConfig;
   }
@@ -81,7 +82,7 @@ export class MetaDataStorage {
       });
       const instance = Reflect.construct(s.proto, args);
       if (s.type === InjectorType.Middleware) {
-        // MiddlewareStorage.add(instance, s.middlewareTypes!);
+        MiddlewareStorage.add(instance, s.middlewareTypes!);
       } else {
         this.serviceInstantiationMap.set(s.target, instance);
       }

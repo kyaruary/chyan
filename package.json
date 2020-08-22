@@ -1,6 +1,6 @@
 {
   "name": "habe",
-  "version": "1.0.19",
+  "version": "1.0.22",
   "main": "dist/lib/index.js",
   "author": {
     "name": "kyaruary",

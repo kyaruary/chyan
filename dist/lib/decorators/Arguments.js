@@ -25,7 +25,7 @@ const ArgumentsTypes_1 = require("../constant/ArgumentsTypes");
 const Uuid = __importStar(require("uuid"));
 function ArgumentsDecoratorWrapper(type, field = "") {
     return function ArgumentsDecorator(target, key, index) {
-        target.constructor.prototype.id = target.constructor.prototype.id ?? Uuid.v4();
+        target.constructor.prototype.id = target.constructor.prototype.id || Uuid.v4();
         metadata_1.MetaDataStorage.addArgumentsDescriptor({ type, field, key, target: target.constructor.prototype.id, position: index });
     };
 }
