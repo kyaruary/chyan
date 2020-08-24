@@ -1,11 +1,12 @@
 import { MetaDataStorage } from "../core/metadata";
 import { ArgumentsTypes } from "../constant/ArgumentsTypes";
 import * as Uuid from "uuid";
-
-function ArgumentsDecoratorWrapper(type: ArgumentsTypes, field: string = "") {
+import multer from "@koa/multer";
+import { UploadDescriptor } from "../interface";
+function ArgumentsDecoratorWrapper(type: ArgumentsTypes, field: string = "", upload?: UploadDescriptor) {
   return function ArgumentsDecorator(target: Object, key: string, index: number) {
     target.constructor.prototype.id = target.constructor.prototype.id || Uuid.v4();
-    MetaDataStorage.addArgumentsDescriptor({ type, field, key, target: target.constructor.prototype.id, position: index });
+    MetaDataStorage.addArgumentsDescriptor({ type, field, key, target: target.constructor.prototype.id, position: index, upload });
   };
 }
 
@@ -45,10 +46,18 @@ export function File(name: string) {
   return ArgumentsDecoratorWrapper(ArgumentsTypes.FILE, name);
 }
 
-export function Files() {
-  return ArgumentsDecoratorWrapper(ArgumentsTypes.FILES);
+export function Files(field: string) {
+  return ArgumentsDecoratorWrapper(ArgumentsTypes.FILES, field);
 }
 
 export function Ctx() {
   return ArgumentsDecoratorWrapper(ArgumentsTypes.CONTEXT);
+}
+
+export function Upload(name: string, options: multer.Options) {
+  return ArgumentsDecoratorWrapper(ArgumentsTypes.FILE, name, { options });
+}
+
+export function Uploads(fields: multer.Field[], options: multer.Options) {
+  return ArgumentsDecoratorWrapper(ArgumentsTypes.FILES, "", { fields, options });
 }

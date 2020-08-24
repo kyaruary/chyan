@@ -1,6 +1,6 @@
 import { ArgumentsTypes } from "../constant/ArgumentsTypes";
 import { Context } from "koa";
-
+import multer from "@koa/multer";
 export interface IMiddleware {
   apply(): void;
 }
@@ -18,7 +18,7 @@ export interface IStatic {
 }
 
 export interface IInterceptor {
-  apply(c: Context): void;
+  apply(c: Context, data?: any): void;
 }
 
 export interface IGuard {
@@ -31,7 +31,7 @@ export interface ILogger {
 
 export interface ArgumentsMetadata {
   value?: any;
-  field: string;
+  field: string | multer.Field[];
   argType: any;
   metaType: ArgumentsTypes;
 }

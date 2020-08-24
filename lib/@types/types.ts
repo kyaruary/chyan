@@ -2,7 +2,7 @@ import { RouteMethod } from "../constant/RouteMethods";
 import { ArgumentsTypes } from "../constant/ArgumentsTypes";
 import { IMiddleware, IPipe, IGuard, IInterceptor, IStatic, IFilter, ILogger } from "../interface/mod";
 import { Context } from "koa";
-
+import multer from "@koa/multer";
 export type Constructor<T = object> = new (...args: any[]) => T;
 
 export type MiddlewareConstructor = Constructor<IMiddleware>;
@@ -49,6 +49,7 @@ export type ServiceInstantiation = {
 export type ArgumentsDescriptor = {
   type: ArgumentsTypes;
   field: string;
+  upload?: UploadDescriptor;
   target: string;
   key: string;
   position: number;
@@ -91,3 +92,18 @@ export enum MiddlewareTypes {
   Filter = "filter",
   Logger = "logger",
 }
+
+export type FileInfo = {
+  fieldname: string;
+  originalname: string;
+  extension?: string;
+  encoding: string;
+  mimetype: string;
+  buffer: Buffer;
+  size: number;
+};
+
+export type UploadDescriptor = {
+  fields?: multer.Field[];
+  options?: multer.Options;
+};

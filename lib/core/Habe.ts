@@ -10,6 +10,16 @@ import serve from "koa-static";
 import { Constructor, MiddlewareTypes, InjectorDescriptor, InjectorType, MiddlewareConstructor, GuardConstructor, InterceptorConstructor, FilterConstructor, PipeConstructor, StaticConstructor, LoggerConstructor } from "../@types/types";
 import * as Uuid from "uuid";
 import { MiddlewareStorage } from "./middleware-storage";
+import { EnvConfig } from "./EnvConfig";
+import multer from "@koa/multer";
+export interface AppConfig {
+  sessionConfig?: any;
+  bodyParserConfig?: any;
+  cookieConfig?: any;
+  proxy?: boolean;
+  multerConfig?: multer.Options;
+}
+
 export class Habe {
   private middlewares: Application.Middleware[] = [];
 
@@ -17,17 +27,32 @@ export class Habe {
   private staticOption?: serve.Options;
   private staticRoot = ".";
 
+  static appConfig: AppConfig = {
+    sessionConfig: {},
+    bodyParserConfig: {},
+    cookieConfig: {},
+    proxy: false,
+  };
+
+  static envConfig: EnvConfig;
+
   private static habe: Habe | null = null;
 
   constructor(private app: Application) {}
 
-  static createApplication(): Habe {
+  static createApplication(appConfig?: AppConfig): Habe {
     if (this.habe === null) {
-      MetaDataStorage.getMetaDataStroage().injectConfig();
+      this.initAppConfig(appConfig);
       const app = new Application();
       this.habe = new Habe(app);
     }
     return this.habe;
+  }
+
+  private static initAppConfig(appConfig?: AppConfig) {
+    if (appConfig) {
+      Object.assign(this.appConfig, appConfig);
+    }
   }
 
   private u(m: Constructor, type: MiddlewareTypes) {
@@ -84,20 +109,26 @@ export class Habe {
 
   async run() {
     const config = MetaDataStorage.envConfig;
+
+    await MetaDataStorage.resolve();
+
     if (config.controllers) {
       await Utils.atuoInject([config.controllers]);
     }
 
-    MetaDataStorage.resolve();
+    this.app.proxy = Habe.appConfig.proxy!;
+
+    this.app.keys = ["session"];
+
+    const SessionConfig: Partial<session.opts> = {};
 
     this.app.use(async (ctx, next) => {
       try {
         await next();
       } catch (e) {
         for (const filter of MiddlewareStorage.filters) {
-          filter.catch(e, ctx as Context);
+          if (!ctx.respond) filter.catch(e, ctx as Context);
         }
-        console.log(e, "exception filter");
       } finally {
         for (const looger of MiddlewareStorage.loggers) {
           looger.log(ctx as Context);
@@ -105,27 +136,35 @@ export class Habe {
       }
     });
 
-    this.app.keys = ["session"];
-
-    const SessionConfig: Partial<session.opts> = {};
+    for (const m of this.middlewares) {
+      this.app.use(m);
+    }
 
     this.app.use(bodyParser());
     this.app.use(cookie());
     this.app.use(session(SessionConfig, this.app));
 
-    for (const m of this.middlewares) {
-      this.app.use(m);
-    }
-
     const router = RouterUtils.getRouter();
+
     this.app.use(router.routes()).use(router.allowedMethods());
 
     if (this.useStaticServer) {
+      this.app.use(async (ctx, next) => {
+        ctx.isStatic = true;
+        await next();
+      });
       this.app.use(serve(this.staticRoot, this.staticOption));
     }
+
+    this.app.use(() => {
+      throw { code: 404, msg: "Not Found" };
+    });
 
     this.app.listen(config.port, () => {
       console.log(`server is running on  http://0.0.0.0:${config.port}`);
     });
   }
 }
+
+MetaDataStorage.getMetaDataStroage().injectEnvConfig();
+Habe.envConfig = MetaDataStorage.envConfig;

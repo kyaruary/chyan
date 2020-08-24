@@ -19,6 +19,9 @@ export class PriorityList<T> {
     !flag && this.priorityList.push({ node, priority });
   }
 
+  // 延迟
+  delay() {}
+
   *[Symbol.iterator]() {
     while (this.priorityList.length !== 0) yield this.dequeue();
   }

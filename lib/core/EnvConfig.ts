@@ -12,13 +12,15 @@ export class EnvConfig<T extends Record = Record> extends Object {
 
   constructor(config: Record) {
     super();
-    const keys = Object.keys(config);
-    for (const key of keys) {
-      const localKey = key.toLowerCase();
-      if (this.hasOwnProperty(localKey) && localKey !== "extra") {
-        Reflect.set(this, localKey, config[key]);
-      } else {
-        Reflect.set(this.extra, localKey, config[key]);
+    if (config) {
+      const keys = Object.keys(config);
+      for (const key of keys) {
+        const localKey = key.toLowerCase();
+        if (this.hasOwnProperty(localKey) && localKey !== "extra") {
+          Reflect.set(this, localKey, config[key]);
+        } else {
+          Reflect.set(this.extra, localKey, config[key]);
+        }
       }
     }
   }

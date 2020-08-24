@@ -1,11 +1,12 @@
 import { MiddlewareTypes } from "../@types/types";
 import { IMiddleware, IPipe, IFilter, IStatic, IInterceptor, IGuard, ILogger } from "../interface/mod";
+import { HabeInterceptor } from "../middlewares/DefaultInterceptor";
 
 export class MiddlewareStorage {
   static filters: IFilter[] = [];
   static middlewares: IMiddleware[] = [];
   static staticServers: IStatic[] = [];
-  static interceptors: IInterceptor[] = [];
+  static interceptor: IInterceptor = new HabeInterceptor();
   static guards: IGuard[] = [];
   static pipes: IPipe[] = [];
   static loggers: ILogger[] = [];
@@ -47,7 +48,7 @@ export class MiddlewareStorage {
   }
 
   private static addInterceptor(m: IInterceptor) {
-    this.interceptors.push(m);
+    this.interceptor = m;
   }
 
   private static addFilter(m: IFilter) {

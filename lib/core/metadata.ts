@@ -8,6 +8,7 @@ import { resolve } from "path";
 import { MiddlewareStorage } from "./middleware-storage";
 export class MetaDataStorage {
   private static instacne: MetaDataStorage;
+
   static getMetaDataStroage() {
     if (!MetaDataStorage.instacne) {
       MetaDataStorage.instacne = new MetaDataStorage();
@@ -60,11 +61,10 @@ export class MetaDataStorage {
         const args = this.argumentsDescriptors.get(cd.target)?.filter((arg) => arg.key === router.key) || [];
         RouterUtils.add({ actionDescriptor: router, prefix: cd.prefix, args, host: instance });
       }
-      // RouterStorage.printRouter();
     }
   }
 
-  injectConfig() {
+  injectEnvConfig() {
     const proto = Reflect.getPrototypeOf(MetaDataStorage.envConfig) as any;
     proto.id = proto.id || Uuid.v4();
     this.serviceInstantiationMap.set(proto.id, MetaDataStorage.envConfig);
@@ -117,10 +117,6 @@ export class MetaDataStorage {
 
   static async resolve() {
     const instacne = MetaDataStorage.getMetaDataStroage();
-    instacne.injectConfig();
-    // console.log(instacne.controllerDescriptor);
-    // console.log(instacne.routerMethodDescriptor);
-    // console.log(instacne.serviceDescriptor);
 
     // 首先连接数据库
     // instacne.initDatabase();

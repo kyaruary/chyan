@@ -1,10 +1,13 @@
-import { RouterDescriptor } from "../@types/types";
-import { Context } from "koa";
+import { RouterDescriptor, ArgumentsDescriptor, FileInfo } from "../@types/types";
+
 import { ArgumentsTypes } from "../constant/ArgumentsTypes";
 import { ArgumentsMetadata } from "../interface/mod";
 
 import KoaRouter from "koa-router";
-import { Next } from "koa";
+import { Context } from "./Context";
+import { Next } from "../interface";
+import { MiddlewareStorage } from "./middleware-storage";
+import multer from "@koa/multer";
 
 const router = new KoaRouter();
 
@@ -13,22 +16,41 @@ export class RouterUtils {
     const fullPath = this.generateRouterPath(r.prefix, r.actionDescriptor.suffix);
     const time = new Date();
     console.log(
-      `*** [${time.getFullYear()}/${time.getMonth() + 1}/${time.getDate()}/${time.getHours()}:${time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()}:${time.getSeconds()}] 注入路由 ${r.actionDescriptor.type}/${fullPath} ,host: ${r.actionDescriptor.hostName}@${r.actionDescriptor.key}`
+      `*** [${time.getFullYear()}/${time.getMonth() + 1}/${time.getDate()}/${time.getHours()}:${time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()}:${time.getSeconds()}] 注入路由 ${r.actionDescriptor.type} ${fullPath} ,host: ${r.actionDescriptor.hostName}@${r.actionDescriptor.key}`
     );
     const method = r.actionDescriptor.type.toLowerCase();
-    (router as any)[method](fullPath, async (c: Context, next: Next) => {
+
+    const middleware = this.getUploadMiddleware(r.args);
+
+    (router as any)[method](fullPath, ...middleware, async (c: Context, next: Next) => {
       const { args } = this.injectArugments(c, r, next);
       // valdiate
       const result = await Reflect.apply(r.actionDescriptor.callback, r.host, [...args]);
-      if (result !== undefined) {
-        c.response.status = 200;
-        c.body = result;
-      }
+      MiddlewareStorage.interceptor.apply(c, result);
     });
   }
 
   private static formatRouter(url: string) {
     return url === "/" ? url : url.replace(/\/$/, "");
+  }
+
+  private static getUploadMiddleware(args: ArgumentsDescriptor[]): Function[] {
+    const middleware: Function[] = [];
+    const multerOptions: any[] = [];
+    // inject files
+    for (const arg of args) {
+      if (arg.type === ArgumentsTypes.FILE) {
+        const upload = multer(arg.upload?.options);
+        middleware.push(upload.single(arg.field));
+        break;
+      }
+      if (arg.type === ArgumentsTypes.FILES) {
+        const upload = multer(arg.upload?.options);
+        middleware.push(upload.fields(arg.upload?.fields || []));
+        break;
+      }
+    }
+    return middleware;
   }
 
   private static generateRouterPath(prefix: string, sub_path: string) {
@@ -43,16 +65,16 @@ export class RouterUtils {
       let object: any;
       switch (arg.type) {
         case ArgumentsTypes.BODY:
-          object = arg.field ? c.request.body?.[arg.field] : c.request.body;
+          object = arg.field ? c.request.body?.[arg.field as string] : c.request.body;
           break;
         case ArgumentsTypes.COOKIE:
           object = cookie;
           break;
         case ArgumentsTypes.PARAMS:
-          object = arg.field ? params[arg.field] : params;
+          object = arg.field ? params[arg.field as string] : params;
           break;
         case ArgumentsTypes.QUERY:
-          object = arg.field ? query[arg.field] : query;
+          object = arg.field ? query[arg.field as string] : query;
           break;
         case ArgumentsTypes.REQ:
           object = c.req;
@@ -67,10 +89,13 @@ export class RouterUtils {
           object = next;
           break;
         case ArgumentsTypes.FILE:
-          object = next; // todo
+          const file: FileInfo = {
+            ...c.file,
+          };
+          object = file;
           break;
         case ArgumentsTypes.FILES:
-          object = next; // todo
+          object = undefined; // todo
           break;
         default:
           console.error("arguments can not find type,", arg.type);
