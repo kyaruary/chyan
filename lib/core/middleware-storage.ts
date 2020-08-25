@@ -1,15 +1,14 @@
 import { MiddlewareTypes } from "../@types/types";
-import { IMiddleware, IPipe, IFilter, IStatic, IInterceptor, IGuard, ILogger } from "../interface/mod";
+import { Middleware, Pipe, Filter, Interceptor, Guard, Logger } from "../interface/mod";
 import { HabeInterceptor } from "../middlewares/DefaultInterceptor";
 
 export class MiddlewareStorage {
-  static filters: IFilter[] = [];
-  static middlewares: IMiddleware[] = [];
-  static staticServers: IStatic[] = [];
-  static interceptor: IInterceptor = new HabeInterceptor();
-  static guards: IGuard[] = [];
-  static pipes: IPipe[] = [];
-  static loggers: ILogger[] = [];
+  static filters: Filter[] = [];
+  static middlewares: Middleware[] = [];
+  static interceptor: Interceptor = new HabeInterceptor();
+  static guards: Guard[] = [];
+  static pipes: Pipe[] = [];
+  static loggers: Logger[] = [];
 
   static add(m: any, type: MiddlewareTypes) {
     switch (type) {
@@ -28,9 +27,6 @@ export class MiddlewareStorage {
       case MiddlewareTypes.Guard:
         this.addGuard(m);
         break;
-      case MiddlewareTypes.StaticServer:
-        this.addStaic(m);
-        break;
       case MiddlewareTypes.Logger:
         this.addLogger(m);
         break;
@@ -39,31 +35,27 @@ export class MiddlewareStorage {
     }
   }
 
-  private static addStaic(m: IStatic) {
-    this.staticServers.push(m);
-  }
-
-  private static addGuard(m: IGuard) {
+  private static addGuard(m: Guard) {
     this.guards.push(m);
   }
 
-  private static addInterceptor(m: IInterceptor) {
+  private static addInterceptor(m: Interceptor) {
     this.interceptor = m;
   }
 
-  private static addFilter(m: IFilter) {
+  private static addFilter(m: Filter) {
     this.filters.push(m);
   }
 
-  private static addMiddleware(m: IMiddleware) {
+  private static addMiddleware(m: Middleware) {
     this.middlewares.push(m);
   }
 
-  private static addPipe(m: IPipe) {
+  private static addPipe(m: Pipe) {
     this.pipes.push(m);
   }
 
-  private static addLogger(logger: ILogger) {
+  private static addLogger(logger: Logger) {
     this.loggers.push(logger);
   }
 }

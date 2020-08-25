@@ -1,17 +1,16 @@
 import { RouteMethod } from "../constant/RouteMethods";
 import { ArgumentsTypes } from "../constant/ArgumentsTypes";
-import { IMiddleware, IPipe, IGuard, IInterceptor, IStatic, IFilter, ILogger } from "../interface/mod";
+import { Middleware, Pipe, Guard, Interceptor, Filter, Logger } from "../interface/mod";
 import { Context } from "koa";
 import multer from "@koa/multer";
 export type Constructor<T = object> = new (...args: any[]) => T;
 
-export type MiddlewareConstructor = Constructor<IMiddleware>;
-export type PipeConstructor = Constructor<IPipe>;
-export type GuardConstructor = Constructor<IGuard>;
-export type InterceptorConstructor = Constructor<IInterceptor>;
-export type StaticConstructor = Constructor<IStatic>;
-export type FilterConstructor = Constructor<IFilter>;
-export type LoggerConstructor = Constructor<ILogger>;
+export type MiddlewareConstructor = Constructor<Middleware>;
+export type PipeConstructor = Constructor<Pipe>;
+export type GuardConstructor = Constructor<Guard>;
+export type InterceptorConstructor = Constructor<Interceptor>;
+export type FilterConstructor = Constructor<Filter>;
+export type LoggerConstructor = Constructor<Logger>;
 
 export type RouterCallback = (c: Context) => any;
 

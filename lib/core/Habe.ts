@@ -7,7 +7,7 @@ import { RouterUtils } from "./router";
 import cookie from "koa-cookie";
 import session from "koa-session";
 import serve from "koa-static";
-import { Constructor, MiddlewareTypes, InjectorDescriptor, InjectorType, MiddlewareConstructor, GuardConstructor, InterceptorConstructor, FilterConstructor, PipeConstructor, StaticConstructor, LoggerConstructor } from "../@types/types";
+import { Constructor, MiddlewareTypes, InjectorDescriptor, InjectorType, MiddlewareConstructor, GuardConstructor, InterceptorConstructor, FilterConstructor, PipeConstructor, LoggerConstructor } from "../@types/types";
 import * as Uuid from "uuid";
 import { MiddlewareStorage } from "./middleware-storage";
 import { EnvConfig } from "./EnvConfig";
@@ -18,6 +18,7 @@ export interface AppConfig {
   cookieConfig?: any;
   proxy?: boolean;
   multerConfig?: multer.Options;
+  controllers?: string[] | string;
 }
 
 export class Habe {
@@ -53,6 +54,7 @@ export class Habe {
     if (appConfig) {
       Object.assign(this.appConfig, appConfig);
     }
+    Object.freeze(this.appConfig);
   }
 
   private u(m: Constructor, type: MiddlewareTypes) {
@@ -112,8 +114,10 @@ export class Habe {
 
     await MetaDataStorage.resolve();
 
-    if (config.controllers) {
-      await Utils.atuoInject([config.controllers]);
+    if (Habe.appConfig.controllers) {
+      const c: string[] = [];
+      c.concat(Habe.appConfig.controllers);
+      await Utils.atuoInject(c);
     }
 
     this.app.proxy = Habe.appConfig.proxy!;

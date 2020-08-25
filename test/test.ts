@@ -1,6 +1,9 @@
-import { Habe, Controller, Get, Service, Post, Body, IFilter, ILogger, Context, NextFc, Next, IInterceptor, File, Ctx, FileInfo, Upload } from "../lib";
+import { Habe, Controller, Get, Service, Post, Body, Filter, Logger, Context, NextFc, Next, Interceptor, File, Ctx, FileInfo, Upload } from "../lib";
 import { promises as fs } from "fs";
 import { resolve } from "path";
+import multer from "@koa/multer";
+
+const multerOption: multer.Options = {};
 
 @Controller()
 export class Hello {
@@ -8,11 +11,12 @@ export class Hello {
   async get(@NextFc() next: Next) {
     return "interceptor";
   }
+
   @Post()
-  post(@Upload("avatar", {}) avatar: FileInfo, @Ctx() ctx: Context) {}
+  post(@Upload("avatar", multerOption) avatar: FileInfo, @Ctx() ctx: Context) {}
 }
 
-export class HttpExceptionFilter implements IFilter {
+export class HttpExceptionFilter implements Filter {
   catch(error: any, ctx: Context) {
     ctx.body = {
       code: -1,
@@ -21,7 +25,7 @@ export class HttpExceptionFilter implements IFilter {
   }
 }
 
-export class Logger implements ILogger {
+export class MyLogger implements Logger {
   private queue: string[] = [];
   async log(ctx: Context) {
     if (ctx.isStatic) {
@@ -29,7 +33,7 @@ export class Logger implements ILogger {
     }
     const time = new Date();
     const ftime = `*** [${time.getFullYear()}/${time.getMonth() + 1}/${time.getDate()}/${time.getHours()}:${time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()}:${time.getSeconds() < 10 ? "0" + time.getSeconds() : time.getSeconds()}]`;
-    const msg = `${ftime}, ${ctx.method}, ${ctx.url}, ${ctx.ip}, ${JSON.stringify(ctx.request.body)}, ${JSON.stringify(ctx.response.body)}`;
+    const msg = `${ftime}, ${ctx.method}, 访问地址: ${ctx.url}, ip: ${ctx.ip}, 请求参数: ${JSON.stringify(ctx.request.body)}, 返回数据: ${JSON.stringify(ctx.response.body)}\n`;
     console.log(msg);
     this.queue.push(msg);
     // setInterval(() => {
@@ -48,7 +52,7 @@ export class Logger implements ILogger {
   }
 }
 
-export class MyInterceptor implements IInterceptor {
+export class MyInterceptor implements Interceptor {
   apply(c: Context, data: any) {
     c.body = {
       data,
@@ -58,11 +62,13 @@ export class MyInterceptor implements IInterceptor {
   }
 }
 
-const app = Habe.createApplication({});
+const app = Habe.createApplication({
+  controllers: [],
+});
 
 app.useGlobalExceptionFilter(HttpExceptionFilter);
 
-app.useLogger(Logger);
+app.useLogger(MyLogger);
 
 app.useGlobalInterceptor(MyInterceptor);
 
