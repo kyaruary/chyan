@@ -1,2 +1,3 @@
 import { Constructor } from "../@types/types";
-export declare function MongoCollection(collectionName: string): (target: Constructor) => void;
+import { SchemaDefinition } from "mongoose";
+export declare function MongoCollection(collectionName: string, schema?: SchemaDefinition): (target: Constructor) => void;

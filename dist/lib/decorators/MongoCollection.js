@@ -22,10 +22,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoCollection = void 0;
 const Uuid = __importStar(require("uuid"));
 const metadata_1 = require("../core/metadata");
-function MongoCollection(collectionName) {
+function MongoCollection(collectionName, schema) {
     return function CollectionDecorator(target) {
         target.prototype.id = target.prototype.id || Uuid.v4();
-        metadata_1.MetaDataStorage.addEntityDescriptor({ name: collectionName, target: target.prototype.id });
+        metadata_1.MetaDataStorage.addEntityDescriptor({ name: collectionName, target: target.prototype.id, schema });
     };
 }
 exports.MongoCollection = MongoCollection;

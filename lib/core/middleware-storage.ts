@@ -1,10 +1,10 @@
 import { MiddlewareTypes } from "../@types/types";
-import { Middleware, Pipe, Filter, Interceptor, Guard, Logger } from "../interface/mod";
+import { Pipe, Filter, Interceptor, Guard, Logger } from "../interface/mod";
 import { HabeInterceptor } from "../middlewares/DefaultInterceptor";
 
 export class MiddlewareStorage {
   static filters: Filter[] = [];
-  static middlewares: Middleware[] = [];
+  static middlewares: Function[] = [];
   static interceptor: Interceptor = new HabeInterceptor();
   static guards: Guard[] = [];
   static pipes: Pipe[] = [];
@@ -47,7 +47,7 @@ export class MiddlewareStorage {
     this.filters.push(m);
   }
 
-  private static addMiddleware(m: Middleware) {
+  private static addMiddleware(m: Function) {
     this.middlewares.push(m);
   }
 

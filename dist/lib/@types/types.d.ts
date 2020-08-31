@@ -3,11 +3,12 @@
 /// <reference types="koa__multer" />
 import { RouteMethod } from "../constant/RouteMethods";
 import { ArgumentsTypes } from "../constant/ArgumentsTypes";
-import { Middleware, Pipe, Guard, Interceptor, Filter, Logger } from "../interface/mod";
+import { Pipe, Guard, Interceptor, Filter, Logger } from "../interface/mod";
 import { Context } from "koa";
 import multer from "@koa/multer";
+import { IncomingMessage } from "http";
+import { SchemaDefinition } from "mongoose";
 export declare type Constructor<T = object> = new (...args: any[]) => T;
-export declare type MiddlewareConstructor = Constructor<Middleware>;
 export declare type PipeConstructor = Constructor<Pipe>;
 export declare type GuardConstructor = Constructor<Guard>;
 export declare type InterceptorConstructor = Constructor<Interceptor>;
@@ -36,6 +37,7 @@ export declare type ActionDescriptor = {
     key: string;
     hostName: string;
     argsType: Constructor[];
+    middlewares: Function[];
 };
 export declare type ServiceInstantiation = {
     target: string;
@@ -52,12 +54,14 @@ export declare type ArgumentsDescriptor = {
 export declare type EntityDescriptor = {
     name: string;
     target: string;
+    schema?: SchemaDefinition;
 };
 export declare type RouterDescriptor = {
     actionDescriptor: ActionDescriptor;
     prefix: string;
     args: ArgumentsDescriptor[];
     host: object;
+    middlewares: Function[];
 };
 export declare type RouterHandle = (...args: any[]) => any;
 export declare type RouterParams = {
@@ -94,5 +98,10 @@ export declare type FileInfo = {
 };
 export declare type UploadDescriptor = {
     fields?: multer.Field[];
-    options?: multer.Options;
+    options?: UploadOptions;
+};
+export declare type UploadOptions = {
+    dest: string;
+    filename: (c: IncomingMessage) => string;
+    limit?: number;
 };

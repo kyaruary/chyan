@@ -82,9 +82,9 @@ class Habe {
         };
         metadata_1.MetaDataStorage.addMiddleware(des);
     }
-    useGlobalMiddleware(middleware) {
-        this.u(middleware, types_1.MiddlewareTypes.Middleware);
-    }
+    // useGlobalMiddleware(middleware: MiddlewareConstructor) {
+    //   this.u(middleware, MiddlewareTypes.Middleware);
+    // }
     useGlobalGuard(guard) {
         this.u(guard, types_1.MiddlewareTypes.Guard);
     }
@@ -124,6 +124,9 @@ class Habe {
                     yield next();
                 }
                 catch (e) {
+                    if (middleware_storage_1.MiddlewareStorage.filters.length === 0) {
+                        throw e;
+                    }
                     for (const filter of middleware_storage_1.MiddlewareStorage.filters) {
                         if (!ctx.respond)
                             filter.catch(e, ctx);
@@ -151,7 +154,7 @@ class Habe {
                 this.app.use(koa_static_1.default(this.staticRoot, this.staticOption));
             }
             this.app.use(() => {
-                throw { code: 404, msg: "Not Found" };
+                throw { code: 404, msg: "Not Found!" };
             });
             this.app.listen(config.port, () => {
                 console.log(`server is running on  http://0.0.0.0:${config.port}`);

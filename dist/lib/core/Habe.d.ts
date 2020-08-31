@@ -4,7 +4,7 @@
 import "reflect-metadata";
 import Application from "koa";
 import serve from "koa-static";
-import { MiddlewareConstructor, GuardConstructor, InterceptorConstructor, FilterConstructor, PipeConstructor, LoggerConstructor } from "../@types/types";
+import { GuardConstructor, InterceptorConstructor, FilterConstructor, PipeConstructor, LoggerConstructor } from "../@types/types";
 import { EnvConfig } from "./EnvConfig";
 import multer from "@koa/multer";
 export interface AppConfig {
@@ -28,7 +28,6 @@ export declare class Habe {
     static createApplication(appConfig?: AppConfig): Habe;
     private static initAppConfig;
     private u;
-    useGlobalMiddleware(middleware: MiddlewareConstructor): void;
     useGlobalGuard(guard: GuardConstructor): void;
     useGlobalInterceptor(ic: InterceptorConstructor): void;
     useGlobalExceptionFilter(filter: FilterConstructor): void;

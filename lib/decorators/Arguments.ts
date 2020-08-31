@@ -42,22 +42,14 @@ export function Session() {
   return ArgumentsDecoratorWrapper(ArgumentsTypes.SESSION);
 }
 
-export function File(name: string) {
-  return ArgumentsDecoratorWrapper(ArgumentsTypes.FILE, name);
-}
-
-export function Files(field: string) {
-  return ArgumentsDecoratorWrapper(ArgumentsTypes.FILES, field);
-}
-
 export function Ctx() {
   return ArgumentsDecoratorWrapper(ArgumentsTypes.CONTEXT);
 }
 
-export function Upload(name: string, options: UploadOptions) {
-  return ArgumentsDecoratorWrapper(ArgumentsTypes.FILE, name, { options });
+export function Upload(name: string) {
+  return ArgumentsDecoratorWrapper(ArgumentsTypes.FILE, name);
 }
 
-export function Uploads(fields: multer.Field[], options: UploadOptions) {
-  return ArgumentsDecoratorWrapper(ArgumentsTypes.FILES, "", { fields, options });
-}
+// export function Uploads(fields: multer.Field[]) {
+//   return ArgumentsDecoratorWrapper(ArgumentsTypes.FILES, "", { fields });
+// }

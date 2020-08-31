@@ -1,4 +1,4 @@
-import { Habe, Controller, Get, Service, Post, Body, Filter, Logger, Context, NextFc, Next, Interceptor, File, Ctx, FileInfo, Upload } from "../lib";
+import { Habe, Controller, Get, Service, Post, Body, Filter, Logger, Context, NextFc, Next, Interceptor, Ctx } from "../lib";
 import { promises as fs } from "fs";
 import { resolve } from "path";
 import multer from "@koa/multer";

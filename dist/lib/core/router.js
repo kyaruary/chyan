@@ -16,7 +16,6 @@ exports.RouterUtils = void 0;
 const ArgumentsTypes_1 = require("../constant/ArgumentsTypes");
 const koa_router_1 = __importDefault(require("koa-router"));
 const middleware_storage_1 = require("./middleware-storage");
-const multer_1 = __importDefault(require("@koa/multer"));
 const router = new koa_router_1.default();
 class RouterUtils {
     static add(r) {
@@ -25,8 +24,8 @@ class RouterUtils {
             const time = new Date();
             console.log(`*** [${time.getFullYear()}/${time.getMonth() + 1}/${time.getDate()}/${time.getHours()}:${time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()}:${time.getSeconds()}] 注入路由 ${r.actionDescriptor.type} ${fullPath} ,host: ${r.actionDescriptor.hostName}@${r.actionDescriptor.key}`);
             const method = r.actionDescriptor.type.toLowerCase();
-            const middleware = this.getUploadMiddleware(r.args);
-            router[method](fullPath, ...middleware, (c, next) => __awaiter(this, void 0, void 0, function* () {
+            // const middleware = this.getUploadMiddleware(r.args);
+            router[method](fullPath, ...r.middlewares, (c, next) => __awaiter(this, void 0, void 0, function* () {
                 const { args } = this.injectArugments(c, r, next);
                 // valdiate
                 const result = yield Reflect.apply(r.actionDescriptor.callback, r.host, [...args]);
@@ -37,25 +36,33 @@ class RouterUtils {
     static formatRouter(url) {
         return url === "/" ? url : url.replace(/\/$/, "");
     }
-    static getUploadMiddleware(args) {
-        var _a, _b, _c;
-        const middleware = [];
-        const multerOptions = [];
-        // inject files
-        for (const arg of args) {
-            if (arg.type === ArgumentsTypes_1.ArgumentsTypes.FILE) {
-                const upload = multer_1.default((_a = arg.upload) === null || _a === void 0 ? void 0 : _a.options);
-                middleware.push(upload.single(arg.field));
-                break;
-            }
-            if (arg.type === ArgumentsTypes_1.ArgumentsTypes.FILES) {
-                const upload = multer_1.default((_b = arg.upload) === null || _b === void 0 ? void 0 : _b.options);
-                middleware.push(upload.fields(((_c = arg.upload) === null || _c === void 0 ? void 0 : _c.fields) || []));
-                break;
-            }
-        }
-        return middleware;
-    }
+    // private static getUploadMiddleware(args: ArgumentsDescriptor[]): Function[] {
+    //   const middleware: Function[] = [];
+    //   const multerOptions: any[] = [];
+    //   // inject files
+    //   for (const arg of args) {
+    //     if (arg.type === ArgumentsTypes.FILE) {
+    //       const upload = multer(arg.upload?.options);
+    //       middleware.push(upload.single(arg.field));
+    //       break;
+    //     }
+    //     if (arg.type === ArgumentsTypes.FILES) {
+    //       const option = arg.upload?.options!;
+    //       const storage = multer.diskStorage({
+    //         destination: function (req, file, cb) {
+    //           cb(null, option.dest);
+    //         },
+    //         filename: function (req, file, cb) {
+    //           cb(null, option.filename(req));
+    //         },
+    //       });
+    //       const upload = multer({ storage });
+    //       middleware.push(upload.fields(arg.upload?.fields || []));
+    //       break;
+    //     }
+    //   }
+    //   return middleware;
+    // }
     static generateRouterPath(prefix, sub_path) {
         return this.formatRouter(`/${prefix}/${sub_path}`.replace(/[/]{2,}/g, "/"));
     }

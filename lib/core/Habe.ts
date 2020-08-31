@@ -7,7 +7,7 @@ import { RouterUtils } from "./router";
 import cookie from "koa-cookie";
 import session from "koa-session";
 import serve from "koa-static";
-import { Constructor, MiddlewareTypes, InjectorDescriptor, InjectorType, MiddlewareConstructor, GuardConstructor, InterceptorConstructor, FilterConstructor, PipeConstructor, LoggerConstructor } from "../@types/types";
+import { Constructor, MiddlewareTypes, InjectorDescriptor, InjectorType, GuardConstructor, InterceptorConstructor, FilterConstructor, PipeConstructor, LoggerConstructor } from "../@types/types";
 import * as Uuid from "uuid";
 import { MiddlewareStorage } from "./middleware-storage";
 import { EnvConfig } from "./EnvConfig";
@@ -75,9 +75,9 @@ export class Habe {
     MetaDataStorage.addMiddleware(des);
   }
 
-  useGlobalMiddleware(middleware: MiddlewareConstructor) {
-    this.u(middleware, MiddlewareTypes.Middleware);
-  }
+  // useGlobalMiddleware(middleware: MiddlewareConstructor) {
+  //   this.u(middleware, MiddlewareTypes.Middleware);
+  // }
 
   useGlobalGuard(guard: GuardConstructor) {
     this.u(guard, MiddlewareTypes.Guard);

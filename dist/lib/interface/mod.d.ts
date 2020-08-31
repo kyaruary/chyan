@@ -3,9 +3,6 @@
 import { ArgumentsTypes } from "../constant/ArgumentsTypes";
 import { Context } from "koa";
 import multer from "@koa/multer";
-export interface Middleware {
-    apply(): void;
-}
 export interface Pipe {
     validate(argTypes: ArgumentsMetadata[], c: Context): void;
 }

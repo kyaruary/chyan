@@ -1,2 +1,1 @@
-import { Constructor } from "../@types/types";
-export declare function Middleware(): (target: Constructor) => void;
+export declare function Middleware(middleware: Function): (target: Object, key: string, descriptor: PropertyDescriptor) => void;

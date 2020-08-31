@@ -18,3 +18,5 @@ __exportStar(require("./Controller"), exports);
 // export * from './Entity'
 __exportStar(require("./RouterMethods"), exports);
 __exportStar(require("./Service"), exports);
+__exportStar(require("./Middleware"), exports);
+__exportStar(require("./MongoCollection"), exports);

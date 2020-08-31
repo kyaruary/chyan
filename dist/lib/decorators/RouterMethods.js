@@ -57,7 +57,7 @@ function Connect(path) {
 exports.Connect = Connect;
 function RouterMethodsFactory(type) {
     return function RouterMethods(path = "") {
-        return function GetDecoratorWrapper(target, key, descriptor) {
+        return function ActionDescriptorDecorator(target, key, descriptor) {
             const argsType = Reflect.getMetadata("design:paramtypes", target, key);
             // save request method, callback, sub router and target into metadata storage;
             target.constructor.prototype.id = target.constructor.prototype.id || Uuid.v4();
@@ -69,6 +69,7 @@ function RouterMethodsFactory(type) {
                 suffix: path,
                 hostName: target.constructor.name,
                 argsType: argsType,
+                middlewares: [],
             });
         };
     };

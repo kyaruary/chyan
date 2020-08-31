@@ -37,6 +37,8 @@ const Uuid = __importStar(require("uuid"));
 const router_1 = require("./router");
 const path_1 = require("path");
 const middleware_storage_1 = require("./middleware-storage");
+const database_1 = require("./database");
+const mongoose_1 = require("mongoose");
 class MetaDataStorage {
     constructor() {
         // descriptor metadata storage
@@ -46,6 +48,7 @@ class MetaDataStorage {
         this.actionDescriptors = new Map();
         this.argumentsDescriptors = new Map();
         this.entityDescriptors = [];
+        this.middlewareMap = new Map();
         // instantiation storage
         this.serviceInstantiationMap = new Map();
     }
@@ -69,6 +72,11 @@ class MetaDataStorage {
         const prev = this.getMetaDataStroage().argumentsDescriptors.get(ad.target) || [];
         this.getMetaDataStroage().argumentsDescriptors.set(ad.target, [...prev, ad]);
     }
+    static attachMiddleware2Action(target, key, middleware) {
+        const k = target + key;
+        const prev = this.getMetaDataStroage().middlewareMap.get(k) || [];
+        this.getMetaDataStroage().middlewareMap.set(target + key, [...prev, middleware]);
+    }
     static addEntityDescriptor(ed) {
         this.getMetaDataStroage().entityDescriptors.push(ed);
     }
@@ -82,7 +90,8 @@ class MetaDataStorage {
             const routers = this.actionDescriptors.get(cd.target) || [];
             for (const router of routers) {
                 const args = ((_a = this.argumentsDescriptors.get(cd.target)) === null || _a === void 0 ? void 0 : _a.filter((arg) => arg.key === router.key)) || [];
-                router_1.RouterUtils.add({ actionDescriptor: router, prefix: cd.prefix, args, host: instance });
+                const middlewares = this.middlewareMap.get(cd.target + router.key) || [];
+                router_1.RouterUtils.add({ actionDescriptor: router, prefix: cd.prefix, args, host: instance, middlewares: middlewares });
             }
         }
     }
@@ -113,29 +122,30 @@ class MetaDataStorage {
     instantiationController(cc, args) {
         return Reflect.construct(cc, args.map((arg) => this.serviceInstantiationMap.get(arg)));
     }
-    // private async initDatabase() {
-    //   if (this.entityDescriptors.length !== 0) {
-    //     /// 初始化数据库， 先拿配置文件
-    //     const db = DinarDatabase.getMongoDBInstance();
-    //     if (MetaDataStorage.envConfig.use_mongo) {
-    //       try {
-    //         for (const ed of this.entityDescriptors) {
-    //           const model = db.collection<any>(ed.name);
-    //           this.serviceInstantiationMap.set(ed.target, model);
-    //         }
-    //       } catch (e) {
-    //         console.log(e);
-    //       }
-    //     } else {
-    //       throw "do not enable mongo db from .env file";
-    //     }
-    //   }
-    // }
+    initDatabase() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.entityDescriptors.length !== 0) {
+                /// 初始化数据库， 先拿配置文件
+                const uri = MetaDataStorage.envConfig.mongo_uri + "/" + MetaDataStorage.envConfig.mongo_database;
+                yield database_1.DatabaseFacade.connectMongodb(uri);
+                try {
+                    for (const ed of this.entityDescriptors) {
+                        const schema = ed.schema ? new mongoose_1.Schema(ed.schema) : new mongoose_1.Schema({});
+                        const m = mongoose_1.model(ed.name, schema);
+                        this.serviceInstantiationMap.set(ed.target, m);
+                    }
+                }
+                catch (e) {
+                    console.log(e);
+                }
+            }
+        });
+    }
     static resolve() {
         return __awaiter(this, void 0, void 0, function* () {
             const instacne = MetaDataStorage.getMetaDataStroage();
             // 首先连接数据库
-            // instacne.initDatabase();
+            yield instacne.initDatabase();
             // init entities undo
             instacne.instantiationServices();
             // console.log(instacne.serviceInstantiationMap);

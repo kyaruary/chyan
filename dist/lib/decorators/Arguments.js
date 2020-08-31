@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Uploads = exports.Upload = exports.Ctx = exports.Files = exports.File = exports.Session = exports.Cookie = exports.Req = exports.Res = exports.NextFc = exports.Params = exports.Query = exports.Body = void 0;
+exports.Upload = exports.Ctx = exports.Session = exports.Cookie = exports.Req = exports.Res = exports.NextFc = exports.Params = exports.Query = exports.Body = void 0;
 const metadata_1 = require("../core/metadata");
 const ArgumentsTypes_1 = require("../constant/ArgumentsTypes");
 const Uuid = __importStar(require("uuid"));
@@ -61,23 +61,14 @@ function Session() {
     return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.SESSION);
 }
 exports.Session = Session;
-function File(name) {
-    return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.FILE, name);
-}
-exports.File = File;
-function Files(field) {
-    return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.FILES, field);
-}
-exports.Files = Files;
 function Ctx() {
     return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.CONTEXT);
 }
 exports.Ctx = Ctx;
-function Upload(name, options) {
-    return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.FILE, name, { options });
+function Upload(name) {
+    return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.FILE, name);
 }
 exports.Upload = Upload;
-function Uploads(fields, options) {
-    return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.FILES, "", { fields, options });
-}
-exports.Uploads = Uploads;
+// export function Uploads(fields: multer.Field[]) {
+//   return ArgumentsDecoratorWrapper(ArgumentsTypes.FILES, "", { fields });
+// }

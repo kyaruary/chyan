@@ -1,13 +1,13 @@
 import { RouteMethod } from "../constant/RouteMethods";
 import { ArgumentsTypes } from "../constant/ArgumentsTypes";
-import { Middleware, Pipe, Guard, Interceptor, Filter, Logger } from "../interface/mod";
+import { Pipe, Guard, Interceptor, Filter, Logger } from "../interface/mod";
 import { Context } from "koa";
 import multer from "@koa/multer";
 import { IncomingMessage } from "http";
 import { SchemaDefinition } from "mongoose";
 export type Constructor<T = object> = new (...args: any[]) => T;
 
-export type MiddlewareConstructor = Constructor<Middleware>;
+// export type MiddlewareConstructor = Constructor<Middleware>;
 export type PipeConstructor = Constructor<Pipe>;
 export type GuardConstructor = Constructor<Guard>;
 export type InterceptorConstructor = Constructor<Interceptor>;
