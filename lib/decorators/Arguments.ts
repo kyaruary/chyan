@@ -2,7 +2,7 @@ import { MetaDataStorage } from "../core/metadata";
 import { ArgumentsTypes } from "../constant/ArgumentsTypes";
 import * as Uuid from "uuid";
 import multer from "@koa/multer";
-import { UploadDescriptor } from "../interface";
+import { UploadDescriptor, UploadOptions } from "../interface";
 function ArgumentsDecoratorWrapper(type: ArgumentsTypes, field: string = "", upload?: UploadDescriptor) {
   return function ArgumentsDecorator(target: Object, key: string, index: number) {
     target.constructor.prototype.id = target.constructor.prototype.id || Uuid.v4();
@@ -54,10 +54,10 @@ export function Ctx() {
   return ArgumentsDecoratorWrapper(ArgumentsTypes.CONTEXT);
 }
 
-export function Upload(name: string, options: multer.Options) {
+export function Upload(name: string, options: UploadOptions) {
   return ArgumentsDecoratorWrapper(ArgumentsTypes.FILE, name, { options });
 }
 
-export function Uploads(fields: multer.Field[], options: multer.Options) {
+export function Uploads(fields: multer.Field[], options: UploadOptions) {
   return ArgumentsDecoratorWrapper(ArgumentsTypes.FILES, "", { fields, options });
 }

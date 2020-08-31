@@ -19,14 +19,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Ctx = exports.Files = exports.File = exports.Session = exports.Cookie = exports.Req = exports.Res = exports.NextFc = exports.Params = exports.Query = exports.Body = void 0;
+exports.Uploads = exports.Upload = exports.Ctx = exports.Files = exports.File = exports.Session = exports.Cookie = exports.Req = exports.Res = exports.NextFc = exports.Params = exports.Query = exports.Body = void 0;
 const metadata_1 = require("../core/metadata");
 const ArgumentsTypes_1 = require("../constant/ArgumentsTypes");
 const Uuid = __importStar(require("uuid"));
-function ArgumentsDecoratorWrapper(type, field = "") {
+function ArgumentsDecoratorWrapper(type, field = "", upload) {
     return function ArgumentsDecorator(target, key, index) {
         target.constructor.prototype.id = target.constructor.prototype.id || Uuid.v4();
-        metadata_1.MetaDataStorage.addArgumentsDescriptor({ type, field, key, target: target.constructor.prototype.id, position: index });
+        metadata_1.MetaDataStorage.addArgumentsDescriptor({ type, field, key, target: target.constructor.prototype.id, position: index, upload });
     };
 }
 function Body(field) {
@@ -65,11 +65,19 @@ function File(name) {
     return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.FILE, name);
 }
 exports.File = File;
-function Files() {
-    return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.FILES);
+function Files(field) {
+    return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.FILES, field);
 }
 exports.Files = Files;
 function Ctx() {
     return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.CONTEXT);
 }
 exports.Ctx = Ctx;
+function Upload(name, options) {
+    return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.FILE, name, { options });
+}
+exports.Upload = Upload;
+function Uploads(fields, options) {
+    return ArgumentsDecoratorWrapper(ArgumentsTypes_1.ArgumentsTypes.FILES, "", { fields, options });
+}
+exports.Uploads = Uploads;

@@ -20,12 +20,13 @@ export class RouterUtils {
     );
     const method = r.actionDescriptor.type.toLowerCase();
 
-    const middleware = this.getUploadMiddleware(r.args);
+    // const middleware = this.getUploadMiddleware(r.args);
 
-    (router as any)[method](fullPath, ...middleware, async (c: Context, next: Next) => {
+    (router as any)[method](fullPath, ...r.middlewares, async (c: Context, next: Next) => {
       const { args } = this.injectArugments(c, r, next);
       // valdiate
       const result = await Reflect.apply(r.actionDescriptor.callback, r.host, [...args]);
+
       MiddlewareStorage.interceptor.apply(c, result);
     });
   }
@@ -34,24 +35,33 @@ export class RouterUtils {
     return url === "/" ? url : url.replace(/\/$/, "");
   }
 
-  private static getUploadMiddleware(args: ArgumentsDescriptor[]): Function[] {
-    const middleware: Function[] = [];
-    const multerOptions: any[] = [];
-    // inject files
-    for (const arg of args) {
-      if (arg.type === ArgumentsTypes.FILE) {
-        const upload = multer(arg.upload?.options);
-        middleware.push(upload.single(arg.field));
-        break;
-      }
-      if (arg.type === ArgumentsTypes.FILES) {
-        const upload = multer(arg.upload?.options);
-        middleware.push(upload.fields(arg.upload?.fields || []));
-        break;
-      }
-    }
-    return middleware;
-  }
+  // private static getUploadMiddleware(args: ArgumentsDescriptor[]): Function[] {
+  //   const middleware: Function[] = [];
+  //   const multerOptions: any[] = [];
+  //   // inject files
+  //   for (const arg of args) {
+  //     if (arg.type === ArgumentsTypes.FILE) {
+  //       const upload = multer(arg.upload?.options);
+  //       middleware.push(upload.single(arg.field));
+  //       break;
+  //     }
+  //     if (arg.type === ArgumentsTypes.FILES) {
+  //       const option = arg.upload?.options!;
+  //       const storage = multer.diskStorage({
+  //         destination: function (req, file, cb) {
+  //           cb(null, option.dest);
+  //         },
+  //         filename: function (req, file, cb) {
+  //           cb(null, option.filename(req));
+  //         },
+  //       });
+  //       const upload = multer({ storage });
+  //       middleware.push(upload.fields(arg.upload?.fields || []));
+  //       break;
+  //     }
+  //   }
+  //   return middleware;
+  // }
 
   private static generateRouterPath(prefix: string, sub_path: string) {
     return this.formatRouter(`/${prefix}/${sub_path}`.replace(/[/]{2,}/g, "/"));

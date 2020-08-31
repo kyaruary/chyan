@@ -3,6 +3,8 @@ import { ArgumentsTypes } from "../constant/ArgumentsTypes";
 import { Middleware, Pipe, Guard, Interceptor, Filter, Logger } from "../interface/mod";
 import { Context } from "koa";
 import multer from "@koa/multer";
+import { IncomingMessage } from "http";
+import { SchemaDefinition } from "mongoose";
 export type Constructor<T = object> = new (...args: any[]) => T;
 
 export type MiddlewareConstructor = Constructor<Middleware>;
@@ -38,6 +40,7 @@ export type ActionDescriptor = {
   key: string;
   hostName: string;
   argsType: Constructor[];
+  middlewares: Function[];
 };
 
 export type ServiceInstantiation = {
@@ -58,6 +61,7 @@ export type EntityDescriptor = {
   // target: typeof Model;
   name: string;
   target: string;
+  schema?: SchemaDefinition;
 };
 
 export type RouterDescriptor = {
@@ -65,6 +69,7 @@ export type RouterDescriptor = {
   prefix: string;
   args: ArgumentsDescriptor[];
   host: object;
+  middlewares: Function[];
 };
 
 export type RouterHandle = (...args: any[]) => any;
@@ -104,5 +109,11 @@ export type FileInfo = {
 
 export type UploadDescriptor = {
   fields?: multer.Field[];
-  options?: multer.Options;
+  options?: UploadOptions;
+};
+
+export type UploadOptions = {
+  dest: string;
+  filename: (c: IncomingMessage) => string;
+  limit?: number;
 };

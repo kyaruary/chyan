@@ -84,10 +84,9 @@ class MetaDataStorage {
                 const args = ((_a = this.argumentsDescriptors.get(cd.target)) === null || _a === void 0 ? void 0 : _a.filter((arg) => arg.key === router.key)) || [];
                 router_1.RouterUtils.add({ actionDescriptor: router, prefix: cd.prefix, args, host: instance });
             }
-            // RouterStorage.printRouter();
         }
     }
-    injectConfig() {
+    injectEnvConfig() {
         const proto = Reflect.getPrototypeOf(MetaDataStorage.envConfig);
         proto.id = proto.id || Uuid.v4();
         this.serviceInstantiationMap.set(proto.id, MetaDataStorage.envConfig);
@@ -135,10 +134,6 @@ class MetaDataStorage {
     static resolve() {
         return __awaiter(this, void 0, void 0, function* () {
             const instacne = MetaDataStorage.getMetaDataStroage();
-            instacne.injectConfig();
-            // console.log(instacne.controllerDescriptor);
-            // console.log(instacne.routerMethodDescriptor);
-            // console.log(instacne.serviceDescriptor);
             // 首先连接数据库
             // instacne.initDatabase();
             // init entities undo

@@ -1,30 +1,29 @@
 /// <reference types="koa-session" />
+/// <reference types="koa__multer" />
 import { ArgumentsTypes } from "../constant/ArgumentsTypes";
 import { Context } from "koa";
-export interface IMiddleware {
+import multer from "@koa/multer";
+export interface Middleware {
     apply(): void;
 }
-export interface IPipe {
+export interface Pipe {
     validate(argTypes: ArgumentsMetadata[], c: Context): void;
 }
-export interface IFilter {
+export interface Filter {
     catch(e: any, c: Context): void;
 }
-export interface IStatic {
-    apply(c: Context): boolean | Promise<boolean>;
+export interface Interceptor {
+    apply(c: Context, data?: any): void;
 }
-export interface IInterceptor {
-    apply(c: Context): void;
-}
-export interface IGuard {
+export interface Guard {
     can(c: Context): void;
 }
-export interface ILogger {
+export interface Logger {
     log(c: Context): void;
 }
 export interface ArgumentsMetadata {
     value?: any;
-    field: string;
+    field: string | multer.Field[];
     argType: any;
     metaType: ArgumentsTypes;
 }

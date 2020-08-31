@@ -1,16 +1,18 @@
 /// <reference types="koa-session" />
+/// <reference types="node" />
+/// <reference types="koa__multer" />
 import { RouteMethod } from "../constant/RouteMethods";
 import { ArgumentsTypes } from "../constant/ArgumentsTypes";
-import { IMiddleware, IPipe, IGuard, IInterceptor, IStatic, IFilter, ILogger } from "../interface/mod";
+import { Middleware, Pipe, Guard, Interceptor, Filter, Logger } from "../interface/mod";
 import { Context } from "koa";
+import multer from "@koa/multer";
 export declare type Constructor<T = object> = new (...args: any[]) => T;
-export declare type MiddlewareConstructor = Constructor<IMiddleware>;
-export declare type PipeConstructor = Constructor<IPipe>;
-export declare type GuardConstructor = Constructor<IGuard>;
-export declare type InterceptorConstructor = Constructor<IInterceptor>;
-export declare type StaticConstructor = Constructor<IStatic>;
-export declare type FilterConstructor = Constructor<IFilter>;
-export declare type LoggerConstructor = Constructor<ILogger>;
+export declare type MiddlewareConstructor = Constructor<Middleware>;
+export declare type PipeConstructor = Constructor<Pipe>;
+export declare type GuardConstructor = Constructor<Guard>;
+export declare type InterceptorConstructor = Constructor<Interceptor>;
+export declare type FilterConstructor = Constructor<Filter>;
+export declare type LoggerConstructor = Constructor<Logger>;
 export declare type RouterCallback = (c: Context) => any;
 export declare type InjectorDescriptor = {
     target: string;
@@ -42,6 +44,7 @@ export declare type ServiceInstantiation = {
 export declare type ArgumentsDescriptor = {
     type: ArgumentsTypes;
     field: string;
+    upload?: UploadDescriptor;
     target: string;
     key: string;
     position: number;
@@ -80,3 +83,16 @@ export declare enum MiddlewareTypes {
     Filter = "filter",
     Logger = "logger"
 }
+export declare type FileInfo = {
+    fieldname: string;
+    originalname: string;
+    extension?: string;
+    encoding: string;
+    mimetype: string;
+    buffer: Buffer;
+    size: number;
+};
+export declare type UploadDescriptor = {
+    fields?: multer.Field[];
+    options?: multer.Options;
+};

@@ -1,10 +1,11 @@
 import { Constructor } from "../@types/types";
 import * as Uuid from "uuid";
 import { MetaDataStorage } from "../core/metadata";
+import { SchemaDefinition } from "mongoose";
 
-export function MongoCollection(collectionName: string) {
+export function MongoCollection(collectionName: string, schema?: SchemaDefinition) {
   return function CollectionDecorator(target: Constructor) {
     target.prototype.id = target.prototype.id || Uuid.v4();
-    MetaDataStorage.addEntityDescriptor({ name: collectionName, target: target.prototype.id });
+    MetaDataStorage.addEntityDescriptor({ name: collectionName, target: target.prototype.id, schema });
   };
 }

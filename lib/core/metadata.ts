@@ -6,6 +6,9 @@ import * as Uuid from "uuid";
 import { RouterUtils } from "./router";
 import { resolve } from "path";
 import { MiddlewareStorage } from "./middleware-storage";
+import { DatabaseFacade } from "./database";
+import { model, Schema } from "mongoose";
+import { url } from "koa-router";
 export class MetaDataStorage {
   private static instacne: MetaDataStorage;
 
@@ -34,6 +37,12 @@ export class MetaDataStorage {
     this.getMetaDataStroage().argumentsDescriptors.set(ad.target, [...prev, ad]);
   }
 
+  static attachMiddleware2Action(target: string, key: string, middleware: Function) {
+    const k = target + key;
+    const prev = this.getMetaDataStroage().middlewareMap.get(k) || [];
+    this.getMetaDataStroage().middlewareMap.set(target + key, [...prev, middleware]);
+  }
+
   static addEntityDescriptor(ed: EntityDescriptor) {
     this.getMetaDataStroage().entityDescriptors.push(ed);
   }
@@ -48,6 +57,7 @@ export class MetaDataStorage {
   private actionDescriptors: Map<string, ActionDescriptor[]> = new Map<string, ActionDescriptor[]>();
   private argumentsDescriptors: Map<string, ArgumentsDescriptor[]> = new Map();
   private entityDescriptors: EntityDescriptor[] = [];
+  private middlewareMap: Map<string, Function[]> = new Map();
   static readonly envConfig: EnvConfig = new EnvConfig(config({ path: resolve(process.cwd(), ".env") }).parsed!);
 
   // instantiation storage
@@ -59,7 +69,8 @@ export class MetaDataStorage {
       const routers = this.actionDescriptors.get(cd.target) || [];
       for (const router of routers) {
         const args = this.argumentsDescriptors.get(cd.target)?.filter((arg) => arg.key === router.key) || [];
-        RouterUtils.add({ actionDescriptor: router, prefix: cd.prefix, args, host: instance });
+        const middlewares = this.middlewareMap.get(cd.target + router.key) || [];
+        RouterUtils.add({ actionDescriptor: router, prefix: cd.prefix, args, host: instance, middlewares: middlewares });
       }
     }
   }
@@ -96,30 +107,29 @@ export class MetaDataStorage {
     );
   }
 
-  // private async initDatabase() {
-  //   if (this.entityDescriptors.length !== 0) {
-  //     /// 初始化数据库， 先拿配置文件
-  //     const db = DinarDatabase.getMongoDBInstance();
-  //     if (MetaDataStorage.envConfig.use_mongo) {
-  //       try {
-  //         for (const ed of this.entityDescriptors) {
-  //           const model = db.collection<any>(ed.name);
-  //           this.serviceInstantiationMap.set(ed.target, model);
-  //         }
-  //       } catch (e) {
-  //         console.log(e);
-  //       }
-  //     } else {
-  //       throw "do not enable mongo db from .env file";
-  //     }
-  //   }
-  // }
+  private async initDatabase() {
+    if (this.entityDescriptors.length !== 0) {
+      /// 初始化数据库， 先拿配置文件
+      const uri = MetaDataStorage.envConfig.mongo_uri + "/" + MetaDataStorage.envConfig.mongo_database;
+      await DatabaseFacade.connectMongodb(uri);
+
+      try {
+        for (const ed of this.entityDescriptors) {
+          const schema = ed.schema ? new Schema(ed.schema) : new Schema({});
+          const m = model(ed.name, schema);
+          this.serviceInstantiationMap.set(ed.target, m);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }
 
   static async resolve() {
     const instacne = MetaDataStorage.getMetaDataStroage();
 
     // 首先连接数据库
-    // instacne.initDatabase();
+    await instacne.initDatabase();
     // init entities undo
     instacne.instantiationServices();
     // console.log(instacne.serviceInstantiationMap);

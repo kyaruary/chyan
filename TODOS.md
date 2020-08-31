@@ -1,5 +1,5 @@
 [ ] graphql
-[ ] socket
+[ ] websocket
 [ ] mongo
 [ ] redis
 [ ] files

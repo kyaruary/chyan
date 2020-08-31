@@ -1,15 +1,17 @@
-/// <reference types="koa-session" />
-import { IFilter, ILogger } from "../lib";
-import { Context } from "koa";
+/// <reference types="koa" />
+import { Filter, Logger, Context, Next, Interceptor, FileInfo } from "../lib";
 export declare class Hello {
-    get(): string;
-    post(body: any): string;
+    get(next: Next): Promise<string>;
+    post(avatar: FileInfo, ctx: Context): void;
 }
-export declare class HttpExceptionFilter implements IFilter {
+export declare class HttpExceptionFilter implements Filter {
     catch(error: any, ctx: Context): void;
 }
-export declare class Logger implements ILogger {
+export declare class MyLogger implements Logger {
     private queue;
     log(ctx: Context): Promise<void>;
     write2File(): Promise<void>;
+}
+export declare class MyInterceptor implements Interceptor {
+    apply(c: Context, data: any): void;
 }

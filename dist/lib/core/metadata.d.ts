@@ -17,7 +17,7 @@ export declare class MetaDataStorage {
     static readonly envConfig: EnvConfig;
     private serviceInstantiationMap;
     private initializeController;
-    injectConfig(): EnvConfig<import("../@types/types").Record>;
+    injectEnvConfig(): EnvConfig<import("../@types/types").Record>;
     private instantiationServices;
     private instantiationController;
     static resolve(): Promise<void>;

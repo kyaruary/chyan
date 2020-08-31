@@ -21,31 +21,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Logger = exports.HttpExceptionFilter = exports.Hello = void 0;
+exports.MyInterceptor = exports.MyLogger = exports.HttpExceptionFilter = exports.Hello = void 0;
 const lib_1 = require("../lib");
 const fs_1 = require("fs");
 const path_1 = require("path");
+const multerOption = {};
 let Hello = class Hello {
-    get() {
-        throw "error home page";
-        return "123";
+    get(next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return "interceptor";
+        });
     }
-    post(body) {
-        console.log(body);
-        return "ok";
-    }
+    post(avatar, ctx) { }
 };
 __decorate([
     lib_1.Get(),
+    __param(0, lib_1.NextFc()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Function]),
+    __metadata("design:returntype", Promise)
 ], Hello.prototype, "get", null);
 __decorate([
     lib_1.Post(),
-    __param(0, lib_1.Body("phone")),
+    __param(0, lib_1.Upload("avatar", multerOption)), __param(1, lib_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], Hello.prototype, "post", null);
 Hello = __decorate([
@@ -61,20 +61,23 @@ class HttpExceptionFilter {
     }
 }
 exports.HttpExceptionFilter = HttpExceptionFilter;
-class Logger {
+class MyLogger {
     constructor() {
         this.queue = [];
     }
     log(ctx) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (ctx.isStatic) {
+                return;
+            }
             const time = new Date();
             const ftime = `*** [${time.getFullYear()}/${time.getMonth() + 1}/${time.getDate()}/${time.getHours()}:${time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()}:${time.getSeconds() < 10 ? "0" + time.getSeconds() : time.getSeconds()}]`;
-            const msg = `${ftime}, ${ctx.method}, ${ctx.url}, ${ctx.ip}, ${JSON.stringify(ctx.request.body)}, ${JSON.stringify(ctx.response.body)}`;
+            const msg = `${ftime}, ${ctx.method}, 访问地址: ${ctx.url}, ip: ${ctx.ip}, 请求参数: ${JSON.stringify(ctx.request.body)}, 返回数据: ${JSON.stringify(ctx.response.body)}\n`;
             console.log(msg);
             this.queue.push(msg);
-            setInterval(() => {
-                this.write2File();
-            }, 1000 * 6);
+            // setInterval(() => {
+            //   this.write2File();
+            // }, 1000 * 6);
         });
     }
     write2File() {
@@ -89,8 +92,22 @@ class Logger {
         });
     }
 }
-exports.Logger = Logger;
-const app = lib_1.Habe.createApplication();
+exports.MyLogger = MyLogger;
+class MyInterceptor {
+    apply(c, data) {
+        c.body = {
+            data,
+            code: 0,
+            msg: "success",
+        };
+    }
+}
+exports.MyInterceptor = MyInterceptor;
+const app = lib_1.Habe.createApplication({
+    controllers: [],
+});
 app.useGlobalExceptionFilter(HttpExceptionFilter);
-app.useLogger(Logger);
+app.useLogger(MyLogger);
+app.useGlobalInterceptor(MyInterceptor);
+app.useStatic("./public");
 app.run();

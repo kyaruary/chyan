@@ -112,13 +112,12 @@ export class Habe {
   async run() {
     const config = MetaDataStorage.envConfig;
 
-    await MetaDataStorage.resolve();
-
     if (Habe.appConfig.controllers) {
       const c: string[] = [];
-      c.concat(Habe.appConfig.controllers);
-      await Utils.atuoInject(c);
+      await Utils.atuoInject(c.concat(Habe.appConfig.controllers));
     }
+
+    await MetaDataStorage.resolve();
 
     this.app.proxy = Habe.appConfig.proxy!;
 
@@ -130,6 +129,9 @@ export class Habe {
       try {
         await next();
       } catch (e) {
+        if (MiddlewareStorage.filters.length === 0) {
+          throw e;
+        }
         for (const filter of MiddlewareStorage.filters) {
           if (!ctx.respond) filter.catch(e, ctx as Context);
         }
@@ -161,7 +163,7 @@ export class Habe {
     }
 
     this.app.use(() => {
-      throw { code: 404, msg: "Not Found" };
+      throw { code: 404, msg: "Not Found!" };
     });
 
     this.app.listen(config.port, () => {
@@ -171,4 +173,5 @@ export class Habe {
 }
 
 MetaDataStorage.getMetaDataStroage().injectEnvConfig();
+
 Habe.envConfig = MetaDataStorage.envConfig;

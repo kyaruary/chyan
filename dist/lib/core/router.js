@@ -15,27 +15,46 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RouterUtils = void 0;
 const ArgumentsTypes_1 = require("../constant/ArgumentsTypes");
 const koa_router_1 = __importDefault(require("koa-router"));
+const middleware_storage_1 = require("./middleware-storage");
+const multer_1 = __importDefault(require("@koa/multer"));
 const router = new koa_router_1.default();
 class RouterUtils {
     static add(r) {
         return __awaiter(this, void 0, void 0, function* () {
             const fullPath = this.generateRouterPath(r.prefix, r.actionDescriptor.suffix);
             const time = new Date();
-            console.log(`*** [${time.getFullYear()}/${time.getMonth() + 1}/${time.getDate()}/${time.getHours()}:${time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()}:${time.getSeconds()}] 注入路由 ${r.actionDescriptor.type}/${fullPath} ,host: ${r.actionDescriptor.hostName}@${r.actionDescriptor.key}`);
+            console.log(`*** [${time.getFullYear()}/${time.getMonth() + 1}/${time.getDate()}/${time.getHours()}:${time.getMinutes() < 10 ? "0" + time.getMinutes() : time.getMinutes()}:${time.getSeconds()}] 注入路由 ${r.actionDescriptor.type} ${fullPath} ,host: ${r.actionDescriptor.hostName}@${r.actionDescriptor.key}`);
             const method = r.actionDescriptor.type.toLowerCase();
-            router[method](fullPath, (c, next) => __awaiter(this, void 0, void 0, function* () {
+            const middleware = this.getUploadMiddleware(r.args);
+            router[method](fullPath, ...middleware, (c, next) => __awaiter(this, void 0, void 0, function* () {
                 const { args } = this.injectArugments(c, r, next);
                 // valdiate
                 const result = yield Reflect.apply(r.actionDescriptor.callback, r.host, [...args]);
-                if (result !== undefined) {
-                    c.response.status = 200;
-                    c.body = result;
-                }
+                middleware_storage_1.MiddlewareStorage.interceptor.apply(c, result);
             }));
         });
     }
     static formatRouter(url) {
         return url === "/" ? url : url.replace(/\/$/, "");
+    }
+    static getUploadMiddleware(args) {
+        var _a, _b, _c;
+        const middleware = [];
+        const multerOptions = [];
+        // inject files
+        for (const arg of args) {
+            if (arg.type === ArgumentsTypes_1.ArgumentsTypes.FILE) {
+                const upload = multer_1.default((_a = arg.upload) === null || _a === void 0 ? void 0 : _a.options);
+                middleware.push(upload.single(arg.field));
+                break;
+            }
+            if (arg.type === ArgumentsTypes_1.ArgumentsTypes.FILES) {
+                const upload = multer_1.default((_b = arg.upload) === null || _b === void 0 ? void 0 : _b.options);
+                middleware.push(upload.fields(((_c = arg.upload) === null || _c === void 0 ? void 0 : _c.fields) || []));
+                break;
+            }
+        }
+        return middleware;
     }
     static generateRouterPath(prefix, sub_path) {
         return this.formatRouter(`/${prefix}/${sub_path}`.replace(/[/]{2,}/g, "/"));
@@ -73,10 +92,11 @@ class RouterUtils {
                     object = next;
                     break;
                 case ArgumentsTypes_1.ArgumentsTypes.FILE:
-                    object = next; // todo
+                    const file = Object.assign({}, c.file);
+                    object = file;
                     break;
                 case ArgumentsTypes_1.ArgumentsTypes.FILES:
-                    object = next; // todo
+                    object = undefined; // todo
                     break;
                 default:
                     console.error("arguments can not find type,", arg.type);

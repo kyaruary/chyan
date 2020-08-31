@@ -1,6 +1,6 @@
 {
   "name": "habe",
-  "version": "1.0.22",
+  "version": "1.1.0",
   "main": "dist/lib/index.js",
   "author": {
     "name": "kyaruary",
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@koa/multer": "^3.0.0",
+    "@types/koa": "^2.11.3",
     "@types/multer": "^1.4.4",
     "dotenv": "^8.2.0",
     "koa": "^2.13.0",
@@ -24,6 +25,7 @@
     "koa-router": "^9.4.0",
     "koa-session": "^6.0.0",
     "koa-static": "^5.0.0",
+    "mongoose": "^5.10.2",
     "multer": "^1.4.2",
     "path-to-regexp": "^6.1.0",
     "reflect-metadata": "^0.1.13",
@@ -32,12 +34,12 @@
     "uuid": "^8.3.0"
   },
   "devDependencies": {
-    "@types/koa": "^2.11.3",
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-router": "^7.4.1",
     "@types/koa-session": "^5.10.2",
     "@types/koa-static": "^4.0.1",
     "@types/koa__multer": "^2.0.1",
+    "@types/mongoose": "^5.7.36",
     "@types/node": "^14.0.27",
     "@types/path-to-regexp": "^1.7.0",
     "@types/uuid": "^8.3.0"
