@@ -4,8 +4,9 @@ import { Pipe, Guard, Interceptor, Filter, Logger } from "../interface/mod";
 import { Context } from "koa";
 import multer from "@koa/multer";
 import { IncomingMessage } from "http";
-import { SchemaDefinition } from "mongoose";
+import { SchemaDefinition, Connection, Collection } from "mongoose";
 export type Constructor<T = object> = new (...args: any[]) => T;
+import mongodb from "mongodb";
 
 // export type MiddlewareConstructor = Constructor<Middleware>;
 export type PipeConstructor = Constructor<Pipe>;
@@ -117,3 +118,26 @@ export type UploadOptions = {
   filename: (c: IncomingMessage) => string;
   limit?: number;
 };
+
+export interface CollectionBase<T> extends mongodb.Collection<T> {
+  /*
+   * Abstract methods. Some of these are already defined on the
+   * mongodb.Collection interface so they've been commented out.
+   */
+  ensureIndex(...args: any[]): any;
+  //find(...args: any[]): any;
+  findAndModify(...args: any[]): any;
+  //findOne(...args: any[]): any;
+  getIndexes(...args: any[]): any;
+  //insert(...args: any[]): any;
+  //mapReduce(...args: any[]): any;
+  //save(...args: any[]): any;
+  //update(...args: any[]): any;
+
+  /** The collection name */
+  collectionName: string;
+  /** The Connection instance */
+  conn: Connection;
+  /** The collection name */
+  name: string;
+}
