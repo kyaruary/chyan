@@ -1,6 +1,6 @@
 {
   "name": "habe",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "main": "dist/lib/index.js",
   "author": {
     "name": "kyaruary",
@@ -31,7 +31,8 @@
     "reflect-metadata": "^0.1.13",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.0",
+    "@types/mongoose": "^5.7.36"
   },
   "devDependencies": {
     "@types/koa-bodyparser": "^4.3.0",
@@ -39,7 +40,6 @@
     "@types/koa-session": "^5.10.2",
     "@types/koa-static": "^4.0.1",
     "@types/koa__multer": "^2.0.1",
-    "@types/mongoose": "^5.7.36",
     "@types/node": "^14.0.27",
     "@types/path-to-regexp": "^1.7.0",
     "@types/uuid": "^8.3.0"

@@ -22,6 +22,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoCollection = void 0;
 const Uuid = __importStar(require("uuid"));
 const metadata_1 = require("../core/metadata");
+var mongoose_1 = require("mongoose");
+Object.defineProperty(exports, "BaseCollection", { enumerable: true, get: function () { return mongoose_1.Collection; } });
 function MongoCollection(collectionName, schema) {
     return function CollectionDecorator(target) {
         target.prototype.id = target.prototype.id || Uuid.v4();
