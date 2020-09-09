@@ -1,4 +1,4 @@
-import { Constructor } from "../../@types/types";
+import { Constructor } from "../../types/types";
 import { SchemaDefinition } from "mongoose";
 import { Injectable } from "../internal/Injectable";
 

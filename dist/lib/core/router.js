@@ -19,7 +19,6 @@ const router = new koa_router_1.default();
 function add(method, prefix, suffix, callback, argTypes, middlewares, argsFn) {
     const fullPath = generateRouterPath(prefix, suffix);
     router[method.toLowerCase()](fullPath, ...middlewares, (c, next) => __awaiter(this, void 0, void 0, function* () {
-        // const { args, argumentsMetadatas } = injectArugments(c, r, next);
         const args = argsFn.map((arg) => arg(c, next));
         const result = yield callback(...args);
         yield middlewate_storage_1.MiddlewaresStorage.interceptor.apply(result, c);

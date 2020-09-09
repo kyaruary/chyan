@@ -1,4 +1,4 @@
-import { Constructor } from "../../@types/types";
+import { Constructor } from "../../types/types";
 import { metadataStorage } from "../../core/metadata-storage";
 import { Helper } from "../helper";
 

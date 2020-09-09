@@ -1,5 +1,5 @@
 import path from "path";
-import { Constructor } from "../@types/types";
+import { Constructor } from "../types/types";
 import { promises as fs } from "fs";
 
 const promises: Promise<void>[] = [];

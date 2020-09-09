@@ -18,7 +18,7 @@ import { MetadataStorage } from ".";
  *    构造函数的参数
  *    action参数
  */
-import { ArgumentsMetadata, Constructor } from "../../@types/types";
+import { ArgumentsMetadata, Constructor } from "../../types/types";
 import { InjectLevel } from "../../decorators";
 
 const storage: MetadataStorage = {

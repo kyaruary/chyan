@@ -17,28 +17,30 @@ export function ParamsNotInvalideException() {
   return new HttpException(Status.NO_AUTHORIZATION, "Params Invalide");
 }
 
-export function BadGatewayException() {}
+//undo
 
-export function BadRequestException() {}
+// export function BadGatewayException() {}
 
-export function ConflictException() {}
+// export function BadRequestException() {}
 
-export function ForbiddenException() {}
+// export function ConflictException() {}
 
-export function GatewayTimeoutException() {}
+// export function ForbiddenException() {}
 
-export function GoneException() {}
+// export function GatewayTimeoutException() {}
 
-export function MethodNotAllowedException() {}
+// export function GoneException() {}
 
-export function NotAcceptableException() {}
+// export function MethodNotAllowedException() {}
 
-export function NotImplementedException() {}
+// export function NotAcceptableException() {}
 
-export function RequestTimeoutException() {}
+// export function NotImplementedException() {}
 
-export function UnauthorizedException() {}
+// export function RequestTimeoutException() {}
 
-export function InternalServerErrorException() {}
+// export function UnauthorizedException() {}
 
-export function UnsupportedMediaTypeException() {}
+// export function InternalServerErrorException() {}
+
+// export function UnsupportedMediaTypeException() {}

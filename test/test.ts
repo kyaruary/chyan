@@ -1,17 +1,11 @@
-import { ChyanApplication, Controller, Get } from "../lib";
-import { BootstrapApplication } from "../lib/core/BootstrapApplication";
-
-@ChyanApplication()
-export class Application extends BootstrapApplication {
-  main() {
-    this.app.run();
-  }
+import "reflect-metadata";
+@t
+class Test {
+  constructor(private name: string) {}
 }
 
-@Controller()
-export class NekoController {
-  @Get()
-  getNeko() {
-    return "happy";
-  }
+function t(target: Function) {
+  const args = Reflect.getMetadata("design:paramtypes", Test);
+  console.log(args);
+  console.log("===");
 }

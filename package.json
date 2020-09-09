@@ -1,11 +1,19 @@
 {
   "name": "chyan",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "main": "dist/lib/index.js",
   "author": {
     "name": "kyaruary",
     "email": "kyaruary@gmail.com"
   },
+  "keywords": [
+    "nodejs",
+    "webframe",
+    "typescript",
+    "decorators",
+    "DI",
+    "koa2"
+  ],
   "maintainers": [
     "kyaruary"
   ],

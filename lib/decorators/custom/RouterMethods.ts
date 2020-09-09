@@ -1,5 +1,5 @@
 import { RouteMethod } from "../../constant/RouteMethods";
-import { Constructor } from "../../@types/types";
+import { Constructor } from "../../types/types";
 import { Action } from "../internal/Action";
 import { Helper } from "../helper";
 

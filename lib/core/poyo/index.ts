@@ -1,5 +1,5 @@
 import { Mongoose, Schema } from "mongoose";
-import { ControllerMetadata, RouterMetadata } from "../../decorators";
+import { ControllerMetadata, isControllerSymbol, RouterMetadata } from "../../decorators";
 import { MongoCollectionMetadata } from "../../decorators/custom/MongoCollection";
 import { ActionMetadata, Record } from "../../interface";
 
@@ -54,7 +54,7 @@ function isMongoCollection(meta?: Record) {
 }
 
 function isController(meta?: Record) {
-  return !!meta?.isController;
+  return (<ControllerMetadata>meta).isController === isControllerSymbol;
 }
 
 function isMiddleware(meta?: Record) {

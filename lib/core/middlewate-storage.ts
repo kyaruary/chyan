@@ -5,7 +5,7 @@ import { HttpException } from "../constant/Exception";
 
 class ChyanInterceptor implements Interceptor {
   apply(body: any, c: Context) {
-    c.body = { code: 0, body, msg: "success" };
+    c.body = body;
   }
 }
 export interface ExceptionFilter {
@@ -16,10 +16,10 @@ class ChyanExceptionFilter implements ExceptionFilter {
   catch(e: Error, c: Context) {
     if (e instanceof HttpException) {
       c.status = e.status;
-      c.body = { msg: e };
+      c.body = e.msg || e.message;
     } else {
       c.status = 500;
-      c.body = { msg: "internal server error" };
+      c.body = "Internal Server Error";
     }
   }
 }
@@ -41,7 +41,7 @@ export class MiddlewaresStorage {
 }
 
 type MiddlewareDescriptor = {
-  fn: Middleware;
+  fn: () => Middleware;
   path?: string;
   afterRouter: boolean;
 };

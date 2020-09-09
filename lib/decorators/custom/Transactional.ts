@@ -1,4 +1,4 @@
-import { Constructor } from "../../@types/types";
+import { Constructor } from "../../types/types";
 
 export function Transactional() {
   return function (target: Object, key: string, descriptor: PropertyDescriptor) {

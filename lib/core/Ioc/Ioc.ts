@@ -48,12 +48,12 @@ export async function initializer() {
   const metadatas = metadataStorage.getMetadata();
 
   for (const [id, metadata] of metadatas.injectorMetadataMap) {
-    if (metadata.meta?.isLifeCircle) {
+    if (!!metadata.meta!.isLifeCircle) {
       if (onlyOneLifeCircle) poyo = <Poyomon>new metadata.target();
       onlyOneLifeCircle = false;
       metadatas.injectorMetadataMap.delete(id);
     }
-    if (metadata.meta?.isApplication) {
+    if (!!metadata.meta!.isApplication) {
       if (onlyOneApplicatin) bootstrapApplicationMetadata = metadata;
       onlyOneApplicatin = false;
       metadatas.injectorMetadataMap.delete(id);

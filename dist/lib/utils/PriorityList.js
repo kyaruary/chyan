@@ -1,20 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PriorityList = void 0;
-// 根据优先级推入队列
 class PriorityList {
     constructor() {
         this.priorityList = [];
     }
-    //  出队
     dequeue() {
         return this.priorityList.shift().node;
     }
-    /**
-     * 推入列表
-     * @param node
-     * @param priority
-     */
     enqueue(node, priority = 0) {
         let flag = false;
         this.priorityList.some((el, index) => {
@@ -25,11 +18,6 @@ class PriorityList {
         });
         !flag && this.priorityList.push({ node, priority });
     }
-    /**
-     *
-     * 查找指定元素
-     * @param callback
-     */
     where(callback) {
         for (const node of this.priorityList) {
             if (callback(node)) {

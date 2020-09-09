@@ -17,7 +17,7 @@ export class Chyan {
 export class Application {
   constructor(private koaApplication: KoaApplication) {}
 
-  useGlobalMiddleware(middleware: Middleware, afterRouter: boolean = false, path?: string) {
+  useGlobalMiddleware(middleware: () => Middleware, afterRouter: boolean = false, path?: string) {
     MiddlewaresStorage.addMiddleware({ fn: middleware, afterRouter, path });
   }
 
@@ -60,7 +60,7 @@ export class Application {
 
     // ...middleware
     for (const m of MiddlewaresStorage.middlewares) {
-      if (!m.afterRouter) this.koaApplication.use(m.fn);
+      if (!m.afterRouter) this.koaApplication.use(m.fn());
     }
 
     for (const router of MiddlewaresStorage.routers) {
@@ -71,7 +71,7 @@ export class Application {
 
     //..afterRouter middleware
     for (const m of MiddlewaresStorage.middlewares) {
-      if (m.afterRouter) this.koaApplication.use(m.fn);
+      if (m.afterRouter) this.koaApplication.use(m.fn());
     }
 
     // ...after middleware
