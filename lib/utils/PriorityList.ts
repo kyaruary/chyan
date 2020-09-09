@@ -7,7 +7,11 @@ export class PriorityList<T> {
     return this.priorityList.shift()!.node;
   }
 
-  // 入队
+  /**
+   * 推入列表
+   * @param node
+   * @param priority
+   */
   enqueue(node: T, priority: number = 0) {
     let flag = false;
     this.priorityList.some((el, index) => {
@@ -19,8 +23,19 @@ export class PriorityList<T> {
     !flag && this.priorityList.push({ node, priority });
   }
 
-  // 延迟
-  delay() {}
+  /**
+   *
+   * 查找指定元素
+   * @param callback
+   */
+  where(callback: HighFunction<T>): PriorityNode<T> | null {
+    for (const node of this.priorityList) {
+      if (callback(node)) {
+        return node;
+      }
+    }
+    return null;
+  }
 
   *[Symbol.iterator]() {
     while (this.priorityList.length !== 0) yield this.dequeue();
@@ -31,3 +46,5 @@ export type PriorityNode<T> = {
   priority: number;
   node: T;
 };
+
+export type HighFunction<T> = (value: PriorityNode<T>) => boolean;

@@ -1,5 +1,8 @@
 [ ] graphql
 [ ] websocket
-[ ] mongo
 [ ] redis
-[ ] files
+[ ] transactional decorator
+[ ] logger
+[x] custom decorator
+[x] expose internal
+[ ] mongoCollection generic class

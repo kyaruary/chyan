@@ -1,27 +1,44 @@
-export enum Exception {
-  NOT_FOUNT_EXCEPTION,
-  NO_AUTHORIZATION_EXCEPTION,
+export enum Status {
+  NOT_FOUND = 404,
+  NO_AUTHORIZATION = 401,
 }
 
-export class HttpException {
-  status?: number;
-  msg: string = "";
-  constructor(status?: number, msg?: string) {
-    this.status = status || this.status;
-    this.msg = msg || this.msg;
+export class HttpException extends Error {
+  constructor(public status: number, public msg: string) {
+    super();
   }
 }
 
-export class RouterNotFountException extends HttpException {}
-
-export class NotFountException implements HttpException {
-  status = 404;
-  msg = "Not Found";
+export function NotFoundException() {
+  return new HttpException(Status.NOT_FOUND, "Not Found");
 }
 
-export class ParamsNotInvalide extends HttpException {
-  status = 401;
-  msg = "Params Invalide";
+export function ParamsNotInvalideException() {
+  return new HttpException(Status.NO_AUTHORIZATION, "Params Invalide");
 }
 
-export class NotImplementException {}
+export function BadGatewayException() {}
+
+export function BadRequestException() {}
+
+export function ConflictException() {}
+
+export function ForbiddenException() {}
+
+export function GatewayTimeoutException() {}
+
+export function GoneException() {}
+
+export function MethodNotAllowedException() {}
+
+export function NotAcceptableException() {}
+
+export function NotImplementedException() {}
+
+export function RequestTimeoutException() {}
+
+export function UnauthorizedException() {}
+
+export function InternalServerErrorException() {}
+
+export function UnsupportedMediaTypeException() {}

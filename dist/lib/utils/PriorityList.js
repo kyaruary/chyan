@@ -10,7 +10,11 @@ class PriorityList {
     dequeue() {
         return this.priorityList.shift().node;
     }
-    // 入队
+    /**
+     * 推入列表
+     * @param node
+     * @param priority
+     */
     enqueue(node, priority = 0) {
         let flag = false;
         this.priorityList.some((el, index) => {
@@ -21,8 +25,19 @@ class PriorityList {
         });
         !flag && this.priorityList.push({ node, priority });
     }
-    // 延迟
-    delay() { }
+    /**
+     *
+     * 查找指定元素
+     * @param callback
+     */
+    where(callback) {
+        for (const node of this.priorityList) {
+            if (callback(node)) {
+                return node;
+            }
+        }
+        return null;
+    }
     *[Symbol.iterator]() {
         while (this.priorityList.length !== 0)
             yield this.dequeue();

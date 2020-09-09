@@ -5,50 +5,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.C = exports.UserModel = void 0;
+exports.Application = void 0;
 const lib_1 = require("../lib");
-const MongoCollection_1 = require("../lib/decorators/MongoCollection");
-const mongoose_1 = require("mongoose");
-const app = lib_1.Habe.createApplication();
-let UserModel = class UserModel extends mongoose_1.Collection {
-};
-UserModel = __decorate([
-    MongoCollection_1.MongoCollection("user")
-], UserModel);
-exports.UserModel = UserModel;
-let C = class C {
-    constructor(um) {
-        this.um = um;
-    }
-    file() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.um.find();
-        });
+const BootstrapApplication_1 = require("../lib/core/BootstrapApplication");
+let Application = class Application extends BootstrapApplication_1.BootstrapApplication {
+    main() {
+        this.app.run();
     }
 };
-__decorate([
-    lib_1.Post(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], C.prototype, "file", null);
-C = __decorate([
-    lib_1.Controller(),
-    __metadata("design:paramtypes", [UserModel])
-], C);
-exports.C = C;
-// app.useGlobalExceptionFilter(HttpExceptionFilter);
-app.run();
+Application = __decorate([
+    lib_1.ChyanApplication()
+], Application);
+exports.Application = Application;

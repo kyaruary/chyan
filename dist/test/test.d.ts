@@ -1,8 +1,4 @@
-import { Collection } from "mongoose";
-export declare class UserModel extends Collection {
-}
-export declare class C {
-    private um;
-    constructor(um: UserModel);
-    file(): Promise<import("mongodb").Cursor<any>>;
+import { BootstrapApplication } from "../lib/core/BootstrapApplication";
+export declare class Application extends BootstrapApplication {
+    main(): void;
 }

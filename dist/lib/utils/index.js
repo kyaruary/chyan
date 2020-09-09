@@ -14,7 +14,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
@@ -40,40 +40,12 @@ class Utils {
         return __awaiter(this, void 0, void 0, function* () {
             const include_path = include;
             try {
-                for (const relative_path of include_path) {
-                    const abs_path = path_1.default.resolve(process.cwd(), relative_path);
-                    if ((yield fs_1.promises.stat(abs_path)).isFile()) {
-                        yield this.DynamicImport(abs_path);
-                    }
-                    else {
-                        yield this.RecursiveImport(abs_path);
-                    }
-                }
-                yield Promise.all(promises);
+                this.injectViaAbsPath(include_path);
             }
             catch (e) {
                 console.log(e, "dynamic import failed");
             }
         });
-    }
-    /**
-     * *\/contoller
-     * ** contoller
-     * contollers/ **
-     * *Controller
-     * @param controller
-     */
-    static parseControllersPath(all) {
-        const controllers = all.split(",");
-        const paths = [];
-        for (const controller of controllers) {
-            paths.push(this.handleControllerPath(controller));
-        }
-        return paths;
-    }
-    static handleControllerPath(controller) {
-        controller = controller.trim();
-        return controller;
     }
     static RecursiveImport(dir) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -99,6 +71,29 @@ class Utils {
             }
             promises.push(Promise.resolve().then(() => __importStar(require(`${file}`))));
         });
+    }
+    static injectViaAbsPath(includeAbsPath) {
+        return __awaiter(this, void 0, void 0, function* () {
+            for (const path of includeAbsPath) {
+                if (this.isAbsPath(path)) {
+                    if ((yield fs_1.promises.stat(path)).isFile()) {
+                        yield this.DynamicImport(path);
+                    }
+                    else {
+                        yield this.RecursiveImport(path);
+                    }
+                }
+                else {
+                    throw path + "is not absolute path";
+                }
+            }
+            yield Promise.all(promises);
+        });
+    }
+    static isAbsPath(path) {
+        const unixReg = /^\//;
+        const winReg = /^[a-zA-z]:/;
+        return unixReg.test(path) || winReg.test(path);
     }
 }
 exports.Utils = Utils;

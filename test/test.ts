@@ -1,21 +1,17 @@
-import { Habe, Controller, Post, Filter } from "../lib";
-import { MongoCollection } from "../lib/decorators/MongoCollection";
-import { Collection } from "mongoose";
+import { ChyanApplication, Controller, Get } from "../lib";
+import { BootstrapApplication } from "../lib/core/BootstrapApplication";
 
-const app = Habe.createApplication();
-
-@MongoCollection("user")
-export class UserModel extends Collection {}
-
-@Controller()
-export class C {
-  constructor(private um: UserModel) {}
-  @Post()
-  async file() {
-    return this.um.find();
+@ChyanApplication()
+export class Application extends BootstrapApplication {
+  main() {
+    this.app.run();
   }
 }
 
-// app.useGlobalExceptionFilter(HttpExceptionFilter);
-
-app.run();
+@Controller()
+export class NekoController {
+  @Get()
+  getNeko() {
+    return "happy";
+  }
+}

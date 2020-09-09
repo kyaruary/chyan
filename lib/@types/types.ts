@@ -1,143 +1,35 @@
-import { RouteMethod } from "../constant/RouteMethods";
-import { ArgumentsTypes } from "../constant/ArgumentsTypes";
-import { Pipe, Guard, Interceptor, Filter, Logger } from "../interface/mod";
 import { Context } from "koa";
-import multer from "@koa/multer";
-import { IncomingMessage } from "http";
-import { SchemaDefinition, Connection, Collection } from "mongoose";
-export type Constructor<T = object> = new (...args: any[]) => T;
-import mongodb from "mongodb";
+import { InjectLevel } from "../decorators";
 
-// export type MiddlewareConstructor = Constructor<Middleware>;
-export type PipeConstructor = Constructor<Pipe>;
-export type GuardConstructor = Constructor<Guard>;
-export type InterceptorConstructor = Constructor<Interceptor>;
-export type FilterConstructor = Constructor<Filter>;
-export type LoggerConstructor = Constructor<Logger>;
+export type Constructor = new (...args: any[]) => object;
 
 export type RouterCallback = (c: Context) => any;
 
-export type InjectorDescriptor = {
-  target: string;
-  proto: Constructor;
-  priority: number;
+export type InjectorMetadata = {
+  id: string;
+  target: Constructor;
   args: string[];
-  type: InjectorType;
-  middlewareTypes?: MiddlewareTypes;
+  meta?: Record;
+  level: InjectLevel;
 };
 
-export type ControllerDescriptor = {
-  target: string;
-  proto: Constructor;
-  prefix: string;
-  args: any[];
-};
-
-export type ActionDescriptor = {
-  suffix: string;
-  target: string;
-  type: RouteMethod;
-  callback: RouterCallback;
+export type ActionMetadata = {
+  id: string;
+  host: string;
   key: string;
-  hostName: string;
   argsType: Constructor[];
-  middlewares: Function[];
+  meta?: Record;
 };
 
-export type ServiceInstantiation = {
-  target: string;
-  instance: object;
-};
-
-export type ArgumentsDescriptor = {
-  type: ArgumentsTypes;
-  field: string;
-  upload?: UploadDescriptor;
-  target: string;
+export type ArgumentsMetadata = {
+  host: string;
   key: string;
   position: number;
+  meta?: Record;
 };
 
-export type EntityDescriptor = {
-  // target: typeof Model;
-  name: string;
-  target: string;
-  schema?: SchemaDefinition;
-};
-
-export type RouterDescriptor = {
-  actionDescriptor: ActionDescriptor;
-  prefix: string;
-  args: ArgumentsDescriptor[];
-  host: object;
-  middlewares: Function[];
-};
-
-export type RouterHandle = (...args: any[]) => any;
-
-export type RouterParams = { name: string; delimiter: string; optional: boolean; repeat: boolean };
-
-export type Path = string;
+export type PropertyMetadata = {};
 
 export type Record = {
   [key: string]: any;
 };
-
-export enum InjectorType {
-  Service = "service",
-  Middleware = "middleware",
-}
-
-export enum MiddlewareTypes {
-  Middleware = "middleware",
-  StaticServer = "static-server",
-  Guard = "guard",
-  Pipe = "pipe",
-  Interceptor = "interceptor",
-  Filter = "filter",
-  Logger = "logger",
-}
-
-export type FileInfo = {
-  fieldname: string;
-  originalname: string;
-  extension?: string;
-  encoding: string;
-  mimetype: string;
-  buffer: Buffer;
-  size: number;
-};
-
-export type UploadDescriptor = {
-  fields?: multer.Field[];
-  options?: UploadOptions;
-};
-
-export type UploadOptions = {
-  dest: string;
-  filename: (c: IncomingMessage) => string;
-  limit?: number;
-};
-
-export interface CollectionBase<T> extends mongodb.Collection<T> {
-  /*
-   * Abstract methods. Some of these are already defined on the
-   * mongodb.Collection interface so they've been commented out.
-   */
-  ensureIndex(...args: any[]): any;
-  //find(...args: any[]): any;
-  findAndModify(...args: any[]): any;
-  //findOne(...args: any[]): any;
-  getIndexes(...args: any[]): any;
-  //insert(...args: any[]): any;
-  //mapReduce(...args: any[]): any;
-  //save(...args: any[]): any;
-  //update(...args: any[]): any;
-
-  /** The collection name */
-  collectionName: string;
-  /** The Connection instance */
-  conn: Connection;
-  /** The collection name */
-  name: string;
-}
