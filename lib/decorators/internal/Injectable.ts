@@ -7,7 +7,7 @@ import { Helper } from "../helper";
  * DI injector
  */
 export function Injectable(attachMetadata?: InjectableAttachMetadataCallback, level: InjectLevel = InjectLevel.C) {
-  return (target: Constructor) => {
+  return (target: Constructor): any => {
     const id = Helper.injectUniqueIendentification(target);
     if (!metadataStorage.hasInjectorMetadata(id)) {
       const args = Helper.getParamsTypesMetaDataidentitfication(target);

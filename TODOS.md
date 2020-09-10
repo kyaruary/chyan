@@ -6,5 +6,5 @@
 [x] custom decorator
 [x] expose internal
 [ ] mongoCollection generic class
-[ ] middwares
-[ ]
+[x] middwares
+[ ] property inject

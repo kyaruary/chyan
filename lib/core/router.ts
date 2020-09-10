@@ -11,6 +11,7 @@ function add(method: RouteMethod, prefix: string, suffix: string, callback: Func
   (router as any)[method.toLowerCase()](fullPath, ...middlewares, async (c: Context, next: Next) => {
     // const { args, argumentsMetadatas } = injectArugments(c, r, next);
     const args = argsFn.map((arg) => arg(c, next));
+
     const result = await callback(...args);
     await MiddlewaresStorage.interceptor.apply(result, c);
   });

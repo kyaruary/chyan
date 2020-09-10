@@ -22,7 +22,7 @@ export class Poyomon {
 
 function initializeController(meta: ControllerMetadata, actionMap: Map<string, ActionMetadata> | undefined, host: object, metadatas: MetadataStorage) {
   if (actionMap) {
-    const { prefix } = meta;
+    const { prefix, middlewares: ControllerMiddlewares } = meta;
     for (const [id, action] of actionMap) {
       if (action.meta?.isRouter) {
         const { suffix, method, middlewares } = action.meta! as RouterMetadata;
@@ -31,10 +31,10 @@ function initializeController(meta: ControllerMetadata, actionMap: Map<string, A
         const argumentsMeta = metadatas.argumentMetadataMap.get(id);
         if (argumentsMeta) {
           for (const [id, argMeta] of argumentsMeta) {
-            getArgsFn[argMeta.position] = argMeta.meta?.callback;
+            getArgsFn[argMeta.position] = argMeta?.meta?.callback;
           }
         }
-        RouterStorage.add(method, prefix, suffix, host[key].bind(host), argsType, middlewares ?? [], getArgsFn);
+        RouterStorage.add(method, prefix, suffix, host[key].bind(host), argsType, [...(ControllerMiddlewares ?? []), ...(middlewares ?? [])], getArgsFn);
       }
     }
   }

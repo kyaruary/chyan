@@ -41,7 +41,7 @@ export class MiddlewaresStorage {
 }
 
 type MiddlewareDescriptor = {
-  fn: () => Middleware;
+  fn: Middleware;
   path?: string;
   afterRouter: boolean;
 };

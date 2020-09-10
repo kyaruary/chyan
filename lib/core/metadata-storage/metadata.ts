@@ -30,7 +30,7 @@ const storage: MetadataStorage = {
 
 // 收集类基础元信息
 export function collectInjectableMetadata(id: string, target: Constructor, args: string[], level: InjectLevel) {
-  storage.injectorMetadataMap.set(id, { id, target, args, level });
+  storage.injectorMetadataMap.set(id, { id, target, args, level, meta: {} });
 }
 
 // 收集参数基础元信息
@@ -38,6 +38,7 @@ export function collectArgumentMetadata(host: string, id: string, meta: Argument
   if (!storage.argumentMetadataMap.has(host)) {
     storage.argumentMetadataMap.set(host, new Map());
   }
+  meta.meta = {};
   storage.argumentMetadataMap.get(host)!.set(id, meta);
 }
 
@@ -46,7 +47,7 @@ export function collectActionMetadata(host: string, id: string, key: string, arg
   if (!storage.actionMetadataMap.has(host)) {
     storage.actionMetadataMap.set(host, new Map());
   }
-  storage.actionMetadataMap.get(host)!.set(id, { key, id, argsType, host });
+  storage.actionMetadataMap.get(host)!.set(id, { key, id, argsType, host, meta: {} });
 }
 
 // 收集属性基础元信息
@@ -54,17 +55,17 @@ export function coolectPropertyMetadata() {}
 
 // 添加方法自定义元信息
 export function attachActionMetadata(host: string, id: string, meta: any) {
-  Object.assign(storage.actionMetadataMap.get(host)?.get(id), { meta });
+  Object.assign(storage.actionMetadataMap.get(host)?.get(id)?.meta, meta);
 }
 
 // 添加类自定义元信息
 export function attachInjectorMetadata(id: string, meta: any) {
-  Object.assign(storage.injectorMetadataMap.get(id), { meta });
+  Object.assign(storage.injectorMetadataMap.get(id)?.meta, meta);
 }
 
 // 添加参数自定义元信息
 export function attachArgumentMetadata(host: string, id: string, meta: any) {
-  Object.assign(storage.argumentMetadataMap.get(host)?.get(id), { meta });
+  Object.assign(storage.argumentMetadataMap.get(host)?.get(id)?.meta, meta);
 }
 
 // 添加自定义属性元信息

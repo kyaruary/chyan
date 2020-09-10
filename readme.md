@@ -10,6 +10,7 @@ import { ChyanApplication, Controller, Get, BootstrapApplication } from "chyan";
 @ChyanApplication()
 export class Application extends BootstrapApplication {
   main() {
+    this.app.useRouter(this.router);
     this.app.run();
   }
 }

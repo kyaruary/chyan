@@ -50,6 +50,7 @@ export class Application {
       try {
         await next();
       } catch (e) {
+        console.log(e);
         MiddlewaresStorage.exceptionFilter.catch(e, ctx);
       }
     });
@@ -60,7 +61,7 @@ export class Application {
 
     // ...middleware
     for (const m of MiddlewaresStorage.middlewares) {
-      if (!m.afterRouter) this.koaApplication.use(m.fn());
+      if (!m.afterRouter) this.koaApplication.use(m.fn);
     }
 
     for (const router of MiddlewaresStorage.routers) {
@@ -71,7 +72,7 @@ export class Application {
 
     //..afterRouter middleware
     for (const m of MiddlewaresStorage.middlewares) {
-      if (m.afterRouter) this.koaApplication.use(m.fn());
+      if (m.afterRouter) this.koaApplication.use(m.fn);
     }
 
     // ...after middleware
