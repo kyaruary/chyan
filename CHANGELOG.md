@@ -1,4 +1,4 @@
-[2020/09/10] v0.2.2 // unpublish
+[2020/09/10] v0.2.2
 
 - support inline action in @ChyanApplication
 - update readme
