@@ -1,4 +1,4 @@
-import { initializer } from "../../core/Ioc/Ioc";
+import { initializer } from "../../core/initializer";
 import { Injectable } from "./Injectable";
 
 function init() {

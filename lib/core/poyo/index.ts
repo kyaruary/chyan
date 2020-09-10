@@ -9,6 +9,7 @@ import { MetadataStorage } from "../metadata-storage";
 import { RouterStorage } from "../router";
 
 export class Poyomon {
+  constructor() {}
   async bubbles(id: string, instance: object, metadatas: MetadataStorage): Promise<undefined | object | void> {
     const meta = metadatas.injectorMetadataMap.get(id)!.meta!;
     if (isController(meta)) return initializeController(meta as ControllerMetadata, metadatas.actionMetadataMap.get(id), instance, metadatas);
@@ -54,7 +55,7 @@ function isMongoCollection(meta?: Record) {
 }
 
 function isController(meta?: Record) {
-  return (<ControllerMetadata>meta).isController === isControllerSymbol;
+  return (<ControllerMetadata>meta)?.isController === isControllerSymbol;
 }
 
 function isMiddleware(meta?: Record) {

@@ -1,9 +1,11 @@
 export declare class PriorityList<T> {
     private priorityList;
-    dequeue(): T;
+    dequeue(): PriorityNode<T> | null;
     enqueue(node: T, priority?: number): void;
+    head(): PriorityNode<T>;
     where(callback: HighFunction<T>): PriorityNode<T> | null;
-    [Symbol.iterator](): Generator<T, void, unknown>;
+    get length(): number;
+    [Symbol.iterator](): Generator<PriorityNode<T> | null, void, unknown>;
 }
 export declare type PriorityNode<T> = {
     priority: number;

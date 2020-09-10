@@ -6,7 +6,8 @@ class PriorityList {
         this.priorityList = [];
     }
     dequeue() {
-        return this.priorityList.shift().node;
+        var _a;
+        return (_a = this.priorityList.shift()) !== null && _a !== void 0 ? _a : null;
     }
     enqueue(node, priority = 0) {
         let flag = false;
@@ -18,6 +19,10 @@ class PriorityList {
         });
         !flag && this.priorityList.push({ node, priority });
     }
+    head() {
+        var _a;
+        return (_a = this.priorityList[0]) !== null && _a !== void 0 ? _a : null;
+    }
     where(callback) {
         for (const node of this.priorityList) {
             if (callback(node)) {
@@ -25,6 +30,9 @@ class PriorityList {
             }
         }
         return null;
+    }
+    get length() {
+        return this.priorityList.length;
     }
     *[Symbol.iterator]() {
         while (this.priorityList.length !== 0)

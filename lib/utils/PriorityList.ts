@@ -4,7 +4,7 @@ export class PriorityList<T> {
 
   //  出队
   dequeue() {
-    return this.priorityList.shift()!.node;
+    return this.priorityList.shift() ?? null;
   }
 
   /**
@@ -24,6 +24,12 @@ export class PriorityList<T> {
   }
 
   /**
+   * 获取头节点，但是不弹出
+   */
+  head() {
+    return this.priorityList[0] ?? null;
+  }
+  /**
    *
    * 查找指定元素
    * @param callback
@@ -35,6 +41,10 @@ export class PriorityList<T> {
       }
     }
     return null;
+  }
+
+  get length() {
+    return this.priorityList.length;
   }
 
   *[Symbol.iterator]() {

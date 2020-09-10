@@ -1,11 +1,15 @@
-import "reflect-metadata";
-@t
-class Test {
-  constructor(private name: string) {}
-}
+import { BootstrapApplication, ChyanApplication, Controller, Get, Service } from "../lib";
+import { EnvConfig } from "../lib/decorators/custom/InjectEnvConfig";
 
-function t(target: Function) {
-  const args = Reflect.getMetadata("design:paramtypes", Test);
-  console.log(args);
-  console.log("===");
+@ChyanApplication()
+export class Application extends BootstrapApplication {
+  constructor(private config: EnvConfig) {
+    super();
+  }
+
+  main() {
+    this.app.useRouter(this.router);
+    console.log(this.config.app_name);
+    this.app.run();
+  }
 }

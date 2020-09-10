@@ -1,4 +1,4 @@
-# Nekochyan
+# Chyan
 
 A web framework base on koa & typescript & DI & decorators
 
@@ -27,7 +27,7 @@ make sure that your's tsconfig.json file contain this
 
 ```json
 "compilerOptions": {
-    "target": "ES2016", // make sure ioc work
+    "target": "ES2016",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
   }

@@ -65,7 +65,7 @@ class Utils {
         return __awaiter(this, void 0, void 0, function* () {
             const s = file.split(".");
             const extension = s[s.length - 1];
-            const isTsFile = extension === "ts" || extension === "tsx";
+            const isTsFile = extension === "ts" || extension === "tsx" || extension === "js" || extension === "jsx";
             if (!isTsFile) {
                 return;
             }

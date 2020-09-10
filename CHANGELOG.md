@@ -1,4 +1,9 @@
-[2020/09/09] v0.1.6 //undo
+[2020/09/09] v0.1.7
+
+- separate initializer from ioc
+- update ioc resolve method
+
+[2020/09/09] v0.1.6
 
 - remove metadata-storage when app run
 
@@ -6,16 +11,20 @@
 
 - modify readme
 - change internal interceptor & exception filter
-  [2020/09/09] v0.1.4
+
+[2020/09/09] v0.1.4
 
 - fix dynamic import bug
-  [2020/09/09] v0.1.3
+
+[2020/09/09] v0.1.3
 
 - change useGlobalMiddleware signatrue
-  [2020/09/09] v0.1.2
+
+[2020/09/09] v0.1.2
 
 - change lib/@types -> lib/types
-  [2020/09/09] v0.1.0
+
+[2020/09/09] v0.1.0
 
 - life circle
 - middleware-storage
