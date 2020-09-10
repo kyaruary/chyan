@@ -35,8 +35,8 @@ export async function resolve(poyo?: Poyomon) {
 
     for (const id of node.args) {
       if (pool.get(id) === undefined) {
-        // 有未实例化的参数，等待下次实例化
-        if (list.length === 0) throw `只有这一个实例${node.target.name}找不到参数, 请给需要注入的参数加入装饰器`;
+        // 根本没有注入这个参数
+        if (!metadatas.injectorMetadataMap.get(id)) throw `实例${node.target.name}找不到参数, 请给需要注入的参数加入装饰器`;
 
         // 设置计数器
         if (!circleMap.has(node.id)) circleMap.set(node.id, 0);

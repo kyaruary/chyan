@@ -1,9 +1,19 @@
+[2020/09/10] v0.2.2 // unpublish
+
+- support inline action in @ChyanApplication
+- update readme
+
+[2020/09/10] v0.2.1
+
+- change ioc impl when inejct arguments
+- fix dynamic import file extension (add js jsx, pre is ts tsx)
+- change app.useGlobalMiddleware param similar to koa
+
 [2020/09/10] v0.2.0
 
 - update readme
 - action level middleware
 - controller level middleware
-- change app.useGlobalMiddleware param similar to koa
 
 [2020/09/10] v0.1.7
 

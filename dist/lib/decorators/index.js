@@ -16,7 +16,7 @@ __exportStar(require("./custom/RouterMethods"), exports);
 __exportStar(require("./custom/Service"), exports);
 __exportStar(require("./custom/Middleware"), exports);
 __exportStar(require("./custom/MongoCollection"), exports);
-__exportStar(require("./internal/ChyanApplication"), exports);
+__exportStar(require("./custom/ChyanApplication"), exports);
 __exportStar(require("./internal/Injectable"), exports);
 __exportStar(require("./internal/Action"), exports);
 __exportStar(require("./internal/Argument"), exports);

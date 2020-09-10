@@ -1,5 +1,4 @@
 import path from "path";
-import { Constructor } from "../types/types";
 import { promises as fs } from "fs";
 
 const promises: Promise<void>[] = [];
@@ -25,7 +24,7 @@ async function RecursiveImport(dir: string) {
 async function DynamicImport(file: string) {
   const s = file.split(".");
   const extension = s[s.length - 1];
-  const isTsFile = extension === "ts" || extension === "tsx";
+  const isTsFile = extension === "ts" || extension === "tsx" || extension === "js" || extension === "jsx";
   if (!isTsFile) return;
 
   promises.push(import(`${file}`));

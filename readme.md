@@ -5,7 +5,7 @@ A web framework base on koa & typescript & DI & decorators
 # Quick Start
 
 ```ts
-import { ChyanApplication, Controller, Get, BootstrapApplication } from "chyan";
+import { ChyanApplication, Get, BootstrapApplication } from "chyan";
 
 @ChyanApplication()
 export class Application extends BootstrapApplication {
@@ -13,13 +13,10 @@ export class Application extends BootstrapApplication {
     this.app.useRouter(this.router);
     this.app.run();
   }
-}
 
-@Controller()
-export class NekoController {
   @Get()
-  getNeko() {
-    return "happy";
+  helloWorld() {
+    return "chyan.co";
   }
 }
 ```

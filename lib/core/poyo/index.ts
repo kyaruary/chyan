@@ -17,6 +17,8 @@ export class Poyomon {
     if (isMongoCollection(meta)) {
       return await initializeMongoCollection(meta as MongoCollectionMetadata);
     }
+
+    if (isApplication(meta)) return initializeController(meta as ControllerMetadata, metadatas.actionMetadataMap.get(id), instance, metadatas);
   }
 }
 
@@ -64,4 +66,8 @@ function isMiddleware(meta?: Record) {
 
 function isService(meta?: Record) {
   return !!meta?.isService;
+}
+
+function isApplication(meta?: Record) {
+  return !!meta?.isApplication;
 }

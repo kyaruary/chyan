@@ -10,7 +10,7 @@ export * from "./custom/Middleware";
 
 export * from "./custom/MongoCollection";
 
-export * from "./internal/ChyanApplication";
+export * from "./custom/ChyanApplication";
 
 export * from "./internal/Injectable";
 export * from "./internal/Action";

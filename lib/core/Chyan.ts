@@ -17,7 +17,7 @@ export class Chyan {
 export class Application {
   constructor(private koaApplication: KoaApplication) {}
 
-  useGlobalMiddleware(middleware: () => Middleware, afterRouter: boolean = false, path?: string) {
+  useGlobalMiddleware(middleware: Middleware, afterRouter: boolean = false, path?: string) {
     MiddlewaresStorage.addMiddleware({ fn: middleware, afterRouter, path });
   }
 
