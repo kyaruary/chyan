@@ -1,13 +1,17 @@
-import { BootstrapApplication, ChyanApplication, Get } from "../lib";
+import { Chyan } from "../lib";
+import { loader } from "../lib/core/loader";
+import path from "path";
+import { initializer } from "../lib/core/initializer";
+import { RouterStorage } from "../lib/core/router";
 
-@ChyanApplication()
-export class Application extends BootstrapApplication {
-  main() {
-    this.app.useRouter(this.router);
-    this.app.run();
-  }
-  @Get()
-  home() {
-    return "chyan";
-  }
-}
+!(async function () {
+  const app = Chyan.createApplication();
+
+  await loader.load([path.resolve(__dirname, "controllers")]);
+
+  await initializer();
+
+  app.useRouter(RouterStorage.getRouter());
+
+  app.run(8033);
+})();

@@ -1,3 +1,7 @@
+[2020/09/10] v0.2.3
+
+- change usage of useGlobalMiddleware
+
 [2020/09/10] v0.2.2
 
 - support inline action in @ChyanApplication

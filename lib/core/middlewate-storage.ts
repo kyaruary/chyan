@@ -25,25 +25,28 @@ class ChyanExceptionFilter implements ExceptionFilter {
 }
 
 export class MiddlewaresStorage {
+  private static index = 0;
+
   static interceptor: Interceptor = new ChyanInterceptor();
+
   static exceptionFilter: ExceptionFilter = new ChyanExceptionFilter();
 
   static middlewares: MiddlewareDescriptor[] = [];
-  static routers: Router[] = [];
 
   static addRouter(router: Router) {
-    this.routers.push(router);
+    this.middlewares.push({ middleware: router, index: this.index++, type: "router" });
   }
 
-  static addMiddleware(middleware: MiddlewareDescriptor) {
-    this.middlewares.push(middleware);
+  static addMiddleware(middleware: Middleware) {
+    this.middlewares.push({ middleware, index: this.index++, type: "middleware" });
   }
 }
 
 type MiddlewareDescriptor = {
-  fn: Middleware;
+  middleware: Middleware | Router;
   path?: string;
-  afterRouter: boolean;
+  index: number;
+  type: "router" | "middleware";
 };
 
 export interface Interceptor {
