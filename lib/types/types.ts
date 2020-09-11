@@ -1,4 +1,6 @@
 import { Context } from "koa";
+import { ChangeStreamOptions, ChangeStream, BulkWriteOpResultObject, CollectionBulkWriteOptions, CollectionCreateOptions, FindAndModifyWriteOpResultObject } from "mongodb";
+import { Aggregate, ClientSession, Collection, Connection, CreateQuery, Document, DocumentQuery, Model, ModelMapReduceOption, ModelOptions, ModelPopulateOptions, ModelUpdateOptions, MongooseFilterQuery, MongooseUpdateQuery, Query, QueryFindBaseOptions, QueryFindOneAndRemoveOptions, QueryFindOneAndUpdateOptions, QueryFindOptions, SaveOptions, Schema } from "mongoose";
 import { InjectLevel } from "../decorators";
 
 export type Constructor = new (...args: any[]) => object;

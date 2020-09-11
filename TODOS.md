@@ -8,3 +8,5 @@
 [ ] mongoCollection generic class
 [x] middwares
 [ ] property inject
+[x] mongo collection extends
+[ ] transfer meta obj to Refelct.setMetadata()

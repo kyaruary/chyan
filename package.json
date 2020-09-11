@@ -1,11 +1,12 @@
 {
   "name": "chyan",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "main": "dist/lib/index.js",
   "author": {
     "name": "kyaruary",
     "email": "kyaruary@gmail.com"
   },
+  "repository": "kyaruary/chyan",
   "keywords": [
     "nodejs",
     "webframe",

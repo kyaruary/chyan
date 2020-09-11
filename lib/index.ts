@@ -13,3 +13,5 @@ export * from "./interface";
 export { Interceptor, ExceptionFilter } from "./core/middlewate-storage";
 
 export { NotFoundException, ParamsNotInvalideException } from "./constant/Exception";
+
+export { Model } from "./types/MongoModel";

@@ -1,3 +1,9 @@
+[2020/09/11] v0.2.6
+
+- export envConfig injectable object
+- attach github repository
+- export Model<T> class for MongoCollection extends
+
 [2020/09/11] v0.2.5
 
 - add result judgement before router enter interceptor

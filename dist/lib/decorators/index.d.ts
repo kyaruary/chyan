@@ -9,3 +9,4 @@ export * from "./internal/Injectable";
 export * from "./internal/Action";
 export * from "./internal/Argument";
 export * from "./internal/Property";
+export * from "./custom/InjectEnvConfig";

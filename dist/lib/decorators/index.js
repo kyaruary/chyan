@@ -21,3 +21,4 @@ __exportStar(require("./internal/Injectable"), exports);
 __exportStar(require("./internal/Action"), exports);
 __exportStar(require("./internal/Argument"), exports);
 __exportStar(require("./internal/Property"), exports);
+__exportStar(require("./custom/InjectEnvConfig"), exports);
