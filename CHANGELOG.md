@@ -1,4 +1,12 @@
-[2020/09/10] v0.2.3
+[2020/09/11] v0.2.5
+
+- add result judgement before router enter interceptor
+
+[2020/09/11] v0.2.4
+
+- fix use Middleware error
+
+[2020/09/11] v0.2.3
 
 - change usage of useGlobalMiddleware
 

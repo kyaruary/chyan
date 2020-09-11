@@ -63,8 +63,9 @@ export class Application {
       if (m.type === "router") {
         const router = m.middleware as Router;
         this.koaApplication.use(router.routes()).use(router.allowedMethods());
+      } else {
+        this.koaApplication.use(m.middleware as Middleware);
       }
-      this.koaApplication.use(m.middleware as Middleware);
     }
 
     // ...after middleware

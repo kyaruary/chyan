@@ -21,7 +21,8 @@ function add(method, prefix, suffix, callback, argTypes, middlewares, argsFn) {
     router[method.toLowerCase()](fullPath, ...middlewares, (c, next) => __awaiter(this, void 0, void 0, function* () {
         const args = argsFn.map((arg) => arg(c, next));
         const result = yield callback(...args);
-        yield middlewate_storage_1.MiddlewaresStorage.interceptor.apply(result, c);
+        if (result !== undefined)
+            yield middlewate_storage_1.MiddlewaresStorage.interceptor.apply(result, c);
     }));
 }
 function formatRouter(url) {

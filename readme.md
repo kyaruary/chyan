@@ -21,7 +21,7 @@ export class Application extends BootstrapApplication {
 }
 ```
 
-make sure that your's tsconfig.json file contain this
+make sure that your tsconfig.json file contain this
 
 ```json
 "compilerOptions": {

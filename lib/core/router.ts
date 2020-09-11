@@ -13,7 +13,7 @@ function add(method: RouteMethod, prefix: string, suffix: string, callback: Func
     const args = argsFn.map((arg) => arg(c, next));
 
     const result = await callback(...args);
-    await MiddlewaresStorage.interceptor.apply(result, c);
+    if (result !== undefined) await MiddlewaresStorage.interceptor.apply(result, c);
   });
 }
 
