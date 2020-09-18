@@ -28,6 +28,20 @@ const storage: MetadataStorage = {
   propertyMetadataMap: new Map(),
 };
 
+const metadataGC: Function[] = [];
+
+export function addMetadataGC(fn: Function) {
+  metadataGC.push(fn);
+}
+
+export function destory() {
+  for (const fn of metadataGC) {
+    typeof fn === "function" && fn();
+  }
+}
+
+export const _metadataStorage = new Map<string, Constructor>();
+
 // 收集类基础元信息
 export function collectInjectableMetadata(id: string, target: Constructor, args: string[], level: InjectLevel) {
   storage.injectorMetadataMap.set(id, { id, target, args, level, meta: {} });
@@ -38,7 +52,7 @@ export function collectArgumentMetadata(host: string, id: string, meta: Argument
   if (!storage.argumentMetadataMap.has(host)) {
     storage.argumentMetadataMap.set(host, new Map());
   }
-  meta.meta = {};
+  meta.meta ??= {};
   storage.argumentMetadataMap.get(host)!.set(id, meta);
 }
 
@@ -95,15 +109,6 @@ export function hasActionMetadata(host: string, id: string): boolean {
 // todo 判断属性元信息是否存在
 export function hasPropertyMetadata(): boolean {
   return false;
-}
-
-// 释放内存空间
-export function destory() {
-  const particalStorage = storage as Partial<MetadataStorage>;
-  delete particalStorage.propertyMetadataMap;
-  delete particalStorage.actionMetadataMap;
-  delete particalStorage.argumentMetadataMap;
-  delete particalStorage.injectorMetadataMap;
 }
 
 // 获取元信息

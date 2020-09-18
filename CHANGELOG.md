@@ -1,3 +1,9 @@
+[2020/] v0.3.0
+
+- deprecate poyo
+- refactor base decorators
+- refactor ioc
+
 [2020/09/11] v0.2.6
 
 - export envConfig injectable object

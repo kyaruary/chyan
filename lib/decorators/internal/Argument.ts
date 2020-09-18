@@ -14,3 +14,5 @@ export function Argument(callback: ArgumentAttachMetadataCallback) {
     metadataStorage.attachArgumentMetadata(host, id, callback(traget, key, index));
   };
 }
+
+export function Arugment2() {}

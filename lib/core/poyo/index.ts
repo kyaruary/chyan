@@ -43,6 +43,7 @@ function initializeController(meta: ControllerMetadata, actionMap: Map<string, A
 }
 
 let conn: Mongoose | null = null;
+
 async function initializeMongoCollection(meta: MongoCollectionMetadata) {
   if (conn === null) {
     conn = await DatabaseFacade.connectMongodb("mongodb://localhost:27017/test");

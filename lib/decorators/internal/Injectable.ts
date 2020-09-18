@@ -1,6 +1,9 @@
 import { Constructor } from "../../types/types";
 import { metadataStorage } from "../../core/metadata-storage";
 import { Helper } from "../helper";
+import { uuid } from "../../vendors";
+import { _metadataGC, _metadataStorage } from "../../core/metadata-storage/metadata";
+import { handleInsSymbol, idSymbol } from "../../constant/symbol";
 
 /**
  * 依赖注入的类装饰器

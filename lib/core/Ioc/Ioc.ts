@@ -1,6 +1,6 @@
-import { Constructor, InjectorMetadata, Record } from "../../interface";
+import { Constructor, Record } from "../../interface";
 import { getInjectorMetadataList, transferMap2List } from "../../utils/InjectorMetadataList";
-import { PriorityNode } from "../../utils/PriorityList";
+import "reflect-metadata";
 import { metadataStorage } from "../metadata-storage";
 import { Poyomon } from "../poyo";
 
@@ -27,7 +27,7 @@ export async function resolve(poyo?: Poyomon) {
   // 有参数， 对参数进行遍历， 找到所有对实参
   // 如果有找不到的参数，修改这个node的优先级（指定为当前头节点的优先级）推入队列中等待下次查找
   // 并在外部技术， 如果查找的最大值大于整个列表长度，或者头节点为空，代表循环引用，无法实例化，抛出错误给开发者
-  while (list.length !== 0) {
+  loop: while (list.length !== 0) {
     const { node } = list.dequeue()!;
     if (pool.get(node.id)) continue; // 已经存在了
 
@@ -54,7 +54,8 @@ export async function resolve(poyo?: Poyomon) {
         const nextPriority = list.head().priority;
 
         list.enqueue(node, nextPriority);
-        continue;
+
+        continue loop;
       }
       args.push(pool.get(id)!.instance);
     }
