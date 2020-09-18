@@ -1,6 +1,6 @@
-import { Next } from "../../interface";
-import { Context } from "../../core/Context";
-import { createArgumentsDecorator } from "../helper";
+import { Context, Next } from "koa";
+import { attachMetadata, fetchMetadata } from "../../core/metadata-storage";
+import { RouteMetaKey } from "./share";
 
 export function Body(field?: string) {
   return createArgumentsDecorator((c: Context) => (field ? c.request.body[field] : c.request.body));
@@ -44,4 +44,15 @@ export function Upload() {
 
 export function Uploads() {
   return createArgumentsDecorator((c: Context) => c.files);
+}
+
+export type ArgumentsCreatedFunction = (c: Context, next: Next) => any;
+
+export function createArgumentsDecorator(callback: ArgumentsCreatedFunction) {
+  return (target: object, key: string, index: number) => {
+    if (!fetchMetadata(RouteMetaKey.args, target, key)) {
+      attachMetadata(RouteMetaKey.args, [], target, key);
+    }
+    fetchMetadata<Function[]>(RouteMetaKey.args, target, key)?.push(callback);
+  };
 }

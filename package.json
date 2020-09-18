@@ -1,7 +1,7 @@
 {
   "name": "chyan",
-  "version": "0.2.6",
-  "main": "dist/lib/index.js",
+  "version": "0.3.0",
+  "main": "dist/index.js",
   "author": {
     "name": "kyaruary",
     "email": "kyaruary@gmail.com"
@@ -21,7 +21,7 @@
   "license": "MIT",
   "scripts": {
     "test": "ts-node test/test.ts",
-    "build": "rm -rf dist & tsc",
+    "build": "rm -rf dist & tsc --build tsconfig.build.json",
     "testmon": "nodemon test/test.ts"
   },
   "dependencies": {

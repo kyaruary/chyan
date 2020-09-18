@@ -1,4 +1,4 @@
-[2020/] v0.3.0
+[2020/09/18] v0.3.0
 
 - deprecate poyo
 - refactor base decorators

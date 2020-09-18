@@ -1,3 +1,10 @@
-export const idSymbol = Symbol("id");
+export enum ChyanMetaKey {
+  id = "chyan:id",
+  onIns = "chyan:handle-ins",
+  beforeIns = "chyan:before-ins",
+  afterIns = "chyan:after-ins",
+}
 
-export const handleInsSymbol = Symbol("handle ins");
+export enum DesignMetaKey {
+  paramtypes = "design:paramtypes",
+}

@@ -1,6 +1,6 @@
 import KoaRouter from "koa-router";
-import { Context } from "./Context";
-import { Constructor, Next } from "../interface";
+import { Constructor } from "../interface";
+import { Context, Next } from "koa";
 import { RouteMethod } from "../constant/RouteMethods";
 import { MiddlewaresStorage } from "./middlewate-storage";
 

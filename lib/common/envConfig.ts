@@ -1,11 +1,8 @@
 import { config } from "dotenv";
-import { Injectable } from "../internal/Injectable";
 import { resolve } from "path";
-export function InjectEnvConfig() {
-  return Injectable();
-}
+import { Injectable } from "../core/Injectable";
 
-@InjectEnvConfig()
+@Injectable()
 export class EnvConfig {
   port = 8080;
   app_name = "Chyan.Application";
