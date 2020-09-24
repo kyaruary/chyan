@@ -1,3 +1,11 @@
+[2020/09/18] v0.3.2
+
+- fix action bug
+
+[2020/09/18] v0.3.1
+
+- fix arguments inejct order
+
 [2020/09/18] v0.3.0
 
 - deprecate poyo

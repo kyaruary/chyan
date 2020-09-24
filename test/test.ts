@@ -1,13 +1,14 @@
-import { Chyan } from "../lib";
-import { resolve } from "../lib/core/Ioc";
-import { loader } from "../lib/core/loader";
+import { BootstrapApplication, ChyanApplication, Ctx, Get, Context, Query } from "../lib";
 
-(async function () {
-  const app = Chyan.createApplication();
-  await loader.load(["/controller/abs/path"]);
-  await resolve();
-  app.useGlobalMiddleware((c, next) => {
-    c.body = "hello world";
-  });
-  app.run(8080);
-});
+@ChyanApplication()
+export class App extends BootstrapApplication {
+  main() {
+    this.app.useRouter(this.router);
+    this.app.run(8083);
+  }
+
+  @Get()
+  homepage(@Ctx() ctx: Context, @Query("name") name: string) {
+    return ctx.url;
+  }
+}

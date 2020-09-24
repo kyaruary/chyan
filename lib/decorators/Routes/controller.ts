@@ -15,7 +15,7 @@ export function _ControllerExtension(prefix = "", callback?: Function) {
     attachMetadata(RouteMetaKey.prefix, prefix, target);
     return {
       afterIns(instance: object) {
-        const actions = fetchMetadata<string[]>(RouteMetaKey.actions, target)!;
+        const actions = fetchMetadata<string[]>(RouteMetaKey.actions, target) ?? [];
         const controllerMiddlewares = fetchMetadata<Function[]>(RouteMetaKey.middlewares, target) ?? [];
         for (const action of actions) {
           const suffix = fetchMetadata<string>(RouteMetaKey.suffix, target, action)!;
@@ -23,7 +23,7 @@ export function _ControllerExtension(prefix = "", callback?: Function) {
           const argTypes = fetchMetadata<Constructor[]>(DesignMetaKey.paramtypes, target, action)!;
           const argFns = fetchMetadata<Function[]>(RouteMetaKey.args, target, action) ?? [];
           const actionMiddlewares = fetchMetadata<Function[]>(RouteMetaKey.middlewares, target, action) ?? [];
-          RouterStorage.add(method, prefix, suffix, instance[action].bind(instance), argTypes, [...controllerMiddlewares, ...actionMiddlewares], argFns);
+          RouterStorage.add(method, prefix, suffix, instance[action].bind(instance), argTypes, [...controllerMiddlewares, ...actionMiddlewares], argFns.reverse());
         }
         callback?.(instance);
       },
