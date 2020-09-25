@@ -1,5 +1,5 @@
 import { Constructor } from "..";
-import { ChyanMetaKey } from "../constant/symbol";
+import { ChyanMetaKey, DesignMetaKey } from "../constant/symbol";
 import { uuid } from "../vendors";
 import { attachMetadata, collectInjector, metaKeyIsExist } from "./metadata-storage";
 

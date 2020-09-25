@@ -1,8 +1,12 @@
-import { BootstrapApplication, ChyanApplication, Ctx, Get, Context, Query } from "../lib";
+import { BootstrapApplication, ChyanApplication, Ctx, Get, Context, Query, EnvConfig } from "../lib";
 
 @ChyanApplication()
 export class App extends BootstrapApplication {
+  constructor(private config: EnvConfig) {
+    super();
+  }
   main() {
+    console.log(this.config.port);
     this.app.useRouter(this.router);
     this.app.run(8083);
   }

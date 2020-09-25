@@ -29,11 +29,11 @@ export function fetchMetadata<T>(metaKey: string, target: object, key: string | 
 export function fetchMetadata<T>(metaKey: string, target: Constructor, key: string | symbol): T | null;
 export function fetchMetadata<T>(metaKey: string, target: object | Constructor, key?: symbol | string): T | null {
   checkMetaKeyIsValid(metaKey);
-  const ot = transferConstructor2Object(target);
-  if (key) {
-    return (Reflect.getMetadata(metaKey, ot, key) as T) ?? null;
+  if (metaKey === DesignMetaKey.paramtypes) {
+    return Reflect.getMetadata(metaKey, target, key as any);
   }
-  return (Reflect.getMetadata(metaKey, ot) as T) ?? null;
+  const ot = transferConstructor2Object(target);
+  return (Reflect.getMetadata(metaKey, ot, key as any) as T) ?? null;
 }
 
 export function attachMetadata(metaKey: string, value: any, target: Constructor): void;

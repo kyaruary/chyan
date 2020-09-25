@@ -1,7 +1,7 @@
 import { ChyanMetaKey } from "../constant/symbol";
 import { fetchMetadata, metadatas } from "./metadata-storage";
 
-const pool: Map<string, object> = new Map();
+const pool: Map<string, Injector> = new Map();
 
 export async function resolve() {
   const list = metadatas();
@@ -42,7 +42,7 @@ export async function resolve() {
 
         continue loop;
       } else {
-        args.push(pool.get(id)!);
+        args.push(pool.get(id)!.instance);
       }
     }
 
@@ -58,4 +58,9 @@ export async function resolve() {
 
     pool.set(node.id, { id: node.id, instance: o });
   }
+}
+
+interface Injector {
+  id: string;
+  instance: object;
 }

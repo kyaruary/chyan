@@ -1,4 +1,8 @@
-[2020/09/18] v0.3.2
+[2020/09/25] v0.3.4
+
+- fix inject parameters error
+
+[2020/09/24] v0.3.3
 
 - fix action bug
 
