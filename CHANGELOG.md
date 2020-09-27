@@ -1,3 +1,7 @@
+[2020/09/25] v0.3.5
+
+- export mongoose Schema class
+
 [2020/09/25] v0.3.4
 
 - fix inject parameters error

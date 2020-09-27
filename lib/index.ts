@@ -22,6 +22,6 @@ export { NotFoundException, ParamsNotInvalideException } from "./constant/Except
 
 export { Model } from "./types/MongoModel";
 
-export { Document } from "mongoose";
+export { Document, Schema, SchemaOptions } from "mongoose";
 
 export * from "./decorators";
