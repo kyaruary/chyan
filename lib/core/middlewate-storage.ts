@@ -18,6 +18,7 @@ class ChyanExceptionFilter implements ExceptionFilter {
       c.status = e.status;
       c.body = e.msg || e.message;
     } else {
+      console.log(e);
       c.status = 500;
       c.body = "Internal Server Error";
     }

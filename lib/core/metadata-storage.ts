@@ -1,0 +1,107 @@
+import { Constructor } from "../types/types";
+import "reflect-metadata";
+import { PriorityList } from "../utils/PriorityList";
+import { ChyanMetaKey, DesignMetaKey } from "../constant/symbol";
+
+const metadataGC: Function[] = [];
+
+const metadataStorage = new Map<string, Constructor>();
+
+export function pushMetadataGCFunction(fn: Function) {
+  metadataGC.push(fn);
+}
+
+export function destory() {
+  for (const fn of metadataGC) {
+    typeof fn === "function" && fn();
+  }
+  metadataStorage.clear();
+}
+
+export function collectInjector(id: string, target: Constructor) {
+  !metadataStorage.get(id) && metadataStorage.set(id, target);
+}
+
+//done
+export function fetchMetadata<T>(metaKey: string, target: Constructor): T | null;
+export function fetchMetadata<T>(metaKey: string, target: object): T | null;
+export function fetchMetadata<T>(metaKey: string, target: object, key: string | symbol): T | null;
+export function fetchMetadata<T>(metaKey: string, target: Constructor, key: string | symbol): T | null;
+export function fetchMetadata<T>(metaKey: string, target: object | Constructor, key?: symbol | string): T | null {
+  checkMetaKeyIsValid(metaKey);
+  if (metaKey === DesignMetaKey.paramtypes) {
+    return Reflect.getMetadata(metaKey, target, key as any);
+  }
+  const ot = transferConstructor2Object(target);
+  return (Reflect.getMetadata(metaKey, ot, key as any) as T) ?? null;
+}
+
+export function attachMetadata(metaKey: string, value: any, target: Constructor): void;
+export function attachMetadata(metaKey: string, value: any, target: object): void;
+export function attachMetadata(metaKey: string, value: any, target: object, key: string): void;
+export function attachMetadata(metaKey: string, value: any, target: Constructor, key: string): void;
+export function attachMetadata(metaKey: string, value: any, target: object | Constructor, key?: string): void;
+export function attachMetadata(metaKey: string, value: any, target: object | Constructor, key?: string) {
+  checkMetaKeyIsValid(metaKey);
+  const ot = transferConstructor2Object(target);
+
+  if (metaKeyIsExist(metaKey, ot, key)) {
+    console.warn(`MetaKey: ${metaKey} already existed, it will be coverd by value: ${value}`);
+  } else {
+    metadataGC.push(() => deleteMetaKey(metaKey, ot, key));
+  }
+  key ? Reflect.defineMetadata(metaKey, value, ot, key) : Reflect.defineMetadata(metaKey, value, ot);
+}
+
+function checkMetaKeyIsValid(metaKey: string) {
+  if (metaKey.split(":").length !== 2) {
+    throw `Not Valid MetaKey: ${metaKey}, use format like 'prefix:key' please`;
+  }
+}
+
+/**
+ * 检查meta key是否存在
+ * @param metaKey
+ * @param target
+ * @param key
+ */
+export function metaKeyIsExist(metaKey: string, target: object, key?: string | symbol): boolean {
+  return key ? fetchMetadata(metaKey, target, key) !== null : fetchMetadata(metaKey, target) !== null;
+}
+
+/**
+ * 删除meta key
+ * @param metaKey
+ * @param target
+ * @param key
+ */
+function deleteMetaKey(metaKey: string, target: object, key?: string): void {
+  key ? Reflect.deleteMetadata(metaKey, target, key) : Reflect.deleteMetadata(metaKey, target);
+}
+
+export function metadatas() {
+  const list: PriorityList<InjectorMetadata> = new PriorityList();
+  for (const [id, target] of metadataStorage) {
+    const argsTypes = fetchMetadata<Constructor[]>(DesignMetaKey.paramtypes, target) ?? [];
+    const args_id = argsTypes.map((arg) => {
+      if (!metaKeyIsExist(ChyanMetaKey.id, target)) throw `Injected Params ${arg.name} does not have a deocrator]`;
+      return fetchMetadata<string>(ChyanMetaKey.id, arg)!;
+    });
+    list.enqueue({ id, argsTypes, args_id, target }, argsTypes.length);
+  }
+  return list;
+}
+
+function transferConstructor2Object(target: object | Constructor): object {
+  if (typeof target === "function") {
+    return target.prototype;
+  }
+  return target;
+}
+
+export interface InjectorMetadata {
+  id: string;
+  args_id: string[];
+  argsTypes: Constructor[];
+  target: Constructor;
+}

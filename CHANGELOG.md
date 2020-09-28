@@ -1,4 +1,29 @@
-[2020/] v0.3.0
+[2020/09/28] v0.3.7
+
+- rm console.log
+- add all env var 2 env config
+
+[2020/09/28] v0.3.6
+
+- add AutoIncrement Decotrator for mongo
+
+[2020/09/27] v0.3.5
+
+- export mongoose Schema class
+
+[2020/09/25] v0.3.4
+
+- fix inject parameters error
+
+[2020/09/24] v0.3.3
+
+- fix action bug
+
+[2020/09/18] v0.3.1
+
+- fix arguments inejct order
+
+[2020/09/18] v0.3.0
 
 - deprecate poyo
 - refactor base decorators

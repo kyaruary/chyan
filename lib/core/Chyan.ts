@@ -1,7 +1,6 @@
 import bodyParser from "koa-bodyparser";
-import KoaApplication, { Context, Middleware, Next } from "koa";
+import KoaApplication, { Middleware } from "koa";
 import cookie from "koa-cookie";
-import { NotFoundException } from "../constant/Exception";
 import Router from "koa-router";
 import { ExceptionFilter, Interceptor, MiddlewaresStorage } from "./middlewate-storage";
 
@@ -67,12 +66,6 @@ export class Application {
         this.koaApplication.use(m.middleware as Middleware);
       }
     }
-
-    // ...after middleware
-    this.koaApplication.use((ctx: Context) => {
-      ctx.status = 404;
-      throw NotFoundException();
-    });
 
     this.koaApplication.listen(port, hostname, () => {
       console.log(`server is running on  http://${hostname}:${port}`);
