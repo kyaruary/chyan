@@ -1,3 +1,8 @@
+[2020/09/28] v0.3.7
+
+- rm console.log
+- add all env var 2 env config
+
 [2020/09/28] v0.3.6
 
 - add AutoIncrement Decotrator for mongo

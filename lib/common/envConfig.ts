@@ -12,9 +12,7 @@ export class EnvConfig {
     const keys = Object.keys(envConfig);
     for (const key of keys) {
       const localKey = key.toLowerCase();
-      if (this.hasOwnProperty(localKey)) {
-        Reflect.set(this, localKey, envConfig[key]);
-      }
+      Reflect.set(this, localKey, envConfig[key]);
     }
   }
 }
