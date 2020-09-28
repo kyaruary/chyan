@@ -5,7 +5,7 @@ import { loader } from "../core/loader";
 import { _ControllerExtension } from "./Routes/controller";
 
 export function ChyanApplication() {
-  setImmediate(resolve);
+  process.nextTick(resolve);
   return _ControllerExtension("", callback);
 }
 
@@ -16,6 +16,6 @@ async function callback(app: object) {
       await loader.load(controllers);
       await resolve();
     }
-    setImmediate(app.start);
+    await app.start();
   }
 }

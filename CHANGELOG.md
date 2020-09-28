@@ -1,4 +1,8 @@
-[2020/09/25] v0.3.5
+[2020/09/28] v0.3.6
+
+- add AutoIncrement Decotrator for mongo
+
+[2020/09/27] v0.3.5
 
 - export mongoose Schema class
 

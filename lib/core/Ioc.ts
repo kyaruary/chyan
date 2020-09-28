@@ -48,13 +48,24 @@ export async function resolve() {
 
     const handleBeforeIns = fetchMetadata<Function>(ChyanMetaKey.beforeIns, node.target);
 
-    const changedObj = handleBeforeIns === null ? null : handleBeforeIns(node.target, args);
+    if (handleBeforeIns !== null) {
+      await handleBeforeIns(node.target, args);
+    }
+
+    const handleOnIns = fetchMetadata<Function>(ChyanMetaKey.onIns, node.target);
+
+    let changedObj: object | null = null;
+    if (handleOnIns !== null) {
+      changedObj = await handleOnIns(node.target, args);
+    }
 
     const o = changedObj ?? Reflect.construct(node.target, args);
 
     const handleAfterIns = fetchMetadata<Function>(ChyanMetaKey.afterIns, node.target);
 
-    handleAfterIns !== null && handleAfterIns(o);
+    if (handleAfterIns !== null) {
+      await handleAfterIns(o);
+    }
 
     pool.set(node.id, { id: node.id, instance: o });
   }
