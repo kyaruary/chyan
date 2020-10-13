@@ -1,3 +1,15 @@
+[2020/10/12] v0.4.0
+
+- add AutoWired decorator
+- add internal chyanlog
+- default parameter ChyanContext
+
+[2020/09/28] v0.3.8
+
+- add auto-increment startAt & incrementBy
+- export ChyanLogger class
+- transfer Constructor 2 ObjectConstructor
+
 [2020/09/28] v0.3.7
 
 - rm console.log

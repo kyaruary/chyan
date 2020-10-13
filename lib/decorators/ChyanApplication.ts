@@ -1,5 +1,4 @@
 import { BootstrapApplication } from "../core/BootstrapApplication";
-import { Injectable } from "../core/Injectable";
 import { resolve } from "../core/Ioc";
 import { loader } from "../core/loader";
 import { _ControllerExtension } from "./Routes/controller";

@@ -1,19 +1,27 @@
 import KoaRouter from "koa-router";
-import { Constructor } from "../interface";
-import { Context, Next } from "koa";
 import { RouteMethod } from "../constant/RouteMethods";
-import { MiddlewaresStorage } from "./middlewate-storage";
+import { MiddlewaresStorage } from "./MiddlewareStorage";
+import { ChyanContext, ChyanNext, Constructor } from "../types/types";
+import { ArgsMetadata, PipeFunction } from "../decorators";
+import { chyanLogger } from "../utils/chyanlog";
 
 const router = new KoaRouter();
 
-function add(method: RouteMethod, prefix: string, suffix: string, callback: Function, argTypes: Constructor[], middlewares: Function[], argsFn: Function[]) {
+function add(method: RouteMethod, prefix: string, suffix: string, callback: Function, argsMetadata: ArgsMetadata[], middlewares: Function[]) {
   const fullPath = generateRouterPath(prefix, suffix);
-  (router as any)[method.toLowerCase()](fullPath, ...middlewares, async (c: Context, next: Next) => {
-    // const { args, argumentsMetadatas } = injectArugments(c, r, next);
-    const args = argsFn.map((arg) => arg(c, next));
+  const useDefaultParameter = argsMetadata.length === 0;
+  const usePipe = argsMetadata.map((a) => a.usePipe).length !== 0;
 
-    const result = await callback(...args);
-    if (result !== undefined) await MiddlewaresStorage.interceptor.apply(result, c);
+  (router as any)[method.toLowerCase()](fullPath, ...middlewares, async (c: ChyanContext, next: ChyanNext) => {
+    const args: RealArg[] = argsMetadata.map((arg) => ({ value: arg.useValue(c, next), usePipe: arg.usePipe, pipe: arg.pipe, metatype: arg.metatype, index: arg.index }));
+    // todo global pipe
+    if (usePipe) {
+      for (const arg of (args as RealArg[]).filter((arg) => arg.usePipe)) {
+        args[arg.index].value = (await arg.pipe?.(arg.value, arg.metatype)) ?? arg.value;
+      }
+    }
+    const result = await callback(...(useDefaultParameter ? [c] : args.map((arg) => arg.value)));
+    if (result !== undefined) await MiddlewaresStorage.globalInterceptor.apply(result, c);
   });
 }
 
@@ -25,11 +33,6 @@ function generateRouterPath(prefix: string, sub_path: string) {
   return formatRouter(`/${prefix}/${sub_path}`.replace(/[/]{2,}/g, "/"));
 }
 
-interface ValidateMetadata {
-  value: string;
-  type: Function;
-}
-
 function getRouter() {
   return router;
 }
@@ -38,3 +41,11 @@ export const RouterStorage = {
   add,
   getRouter,
 };
+
+interface RealArg {
+  value: any;
+  usePipe: boolean;
+  pipe?: PipeFunction;
+  metatype: any;
+  index: number;
+}
