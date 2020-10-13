@@ -94,7 +94,7 @@ export async function resolve() {
 }
 
 export function fetchInjector<T>(id: string): T | null {
-  return ((pool.get(id)?.instance as unknown) as T) || null;
+  return ((pool.get(id)?.instance as unknown) as T) ?? null;
 }
 
 interface Injector {

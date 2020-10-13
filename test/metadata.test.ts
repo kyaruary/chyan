@@ -155,13 +155,13 @@ export function testMetadata() {
         const id = fetchMetadata<string>(metakey.id, TestClass);
         const member = fetchMetadata<string>(metakey.member, TestClass, "cc");
         const method = fetchMetadata<string>(metakey.method, TestClass, "sayC");
-        it(`${metakey.id} from class must be ${metavalue.id}`, function () {
+        it(`${metakey.id} from class must be null`, function () {
           assert.strictEqual(id, null);
         });
-        it(`${metakey.member} from class must be ${metavalue.member}`, function () {
+        it(`${metakey.member} from class must be null`, function () {
           assert.strictEqual(member, null);
         });
-        it(`${metakey.method} from class must be ${metavalue.method}`, function () {
+        it(`${metakey.method} from class must be null`, function () {
           assert.strictEqual(method, null);
         });
       });
@@ -185,13 +185,13 @@ export function testMetadata() {
         const id = fetchMetadata<string>(metakey.id, TestClass.prototype);
         const member = fetchMetadata<string>(metakey.member, TestClass.prototype, "cc");
         const method = fetchMetadata<string>(metakey.method, TestClass.prototype, "sayC");
-        it(`${metakey.id} from class prototype must be ${metavalue.id}`, function () {
+        it(`${metakey.id} from class prototype must be null`, function () {
           assert.strictEqual(id, null);
         });
-        it(`${metakey.member} from class prototype must be ${metavalue.member}`, function () {
+        it(`${metakey.member} from class prototype must be null`, function () {
           assert.strictEqual(member, null);
         });
-        it(`${metakey.method} from class prototype must be ${metavalue.method}`, function () {
+        it(`${metakey.method} from class prototype must be null`, function () {
           assert.strictEqual(method, null);
         });
       });

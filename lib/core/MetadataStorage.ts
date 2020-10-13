@@ -3,6 +3,7 @@ import "reflect-metadata";
 import { PriorityList } from "../utils/PriorityList";
 import { ChyanMetaKey, DesignMetaKey } from "../constant/metakey";
 import { chyanLogger } from "../utils/chyanlog";
+import { isClass } from "../utils/CheckClassType";
 
 const metadataGC: Function[] = [];
 
@@ -20,8 +21,12 @@ export function destory() {
 }
 
 export function collectInjector(id: string, target: Constructor) {
+  if (isClass(target)) {
+    !metadataStorage.get(id) && metadataStorage.set(id, target);
+    return true;
+  }
+  return false;
   // Reflect.defineMetadata(DesignMetaKey.paramTypes, Reflect.getMetadata(DesignMetaKey.paramTypes, target), transferConstructor2Object(target));
-  !metadataStorage.get(id) && metadataStorage.set(id, target);
 }
 
 //done

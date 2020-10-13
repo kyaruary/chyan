@@ -4,18 +4,15 @@
 
 ### core
 
-- Application
-- collectInjector (Injectable)
-- resolve & getInjector
-- attachMetadata & fetchMetadata
-- MiddlewareStorage
+[x]collectInjector (Injectable)
+[x]resolve & getInjector
+[x]attachMetadata & fetchMetadata
 
 ### decorators
 
-- Routes
-  - actions
-  - args
-  - controllers
-  - middlewares
-- ChyanApplication
-- MongoCollection
+Routes
+
+- [x]actions
+- [ ]args
+- [x]controllers
+- [ ]middlewares

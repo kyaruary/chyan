@@ -1,6 +1,6 @@
 {
   "name": "chyan",
-  "version": "0.3.7",
+  "version": "0.4.1",
   "main": "dist/index.js",
   "author": {
     "name": "kyaruary",
@@ -22,7 +22,6 @@
   "scripts": {
     "test:build": "rm -rf outputs & tsc --build tsconfig.test.json",
     "build": "rm -rf dist & tsc --build tsconfig.build.json",
-    "testmon": "nodemon test/test.ts",
     "test": "mocha outputs/test.js",
     "test:dev": "yarn test:build &&  yarn test"
   },

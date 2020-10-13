@@ -8,6 +8,6 @@ export { fetchInjector } from "./Ioc";
 
 export { fetchMetadata, attachMetadata } from "./MetadataStorage";
 
-export { GlobalExceptionFilter, CanActive, GlobalInterceptor, GlobalPipe, GlobalMiddleware } from "./MiddlewareStorage";
+export { GlobalExceptionFilter, CanActive, GlobalInterceptor, GlobalMiddleware } from "./MiddlewareStorage";
 
 export { AutoWired } from "./AutoWired";
