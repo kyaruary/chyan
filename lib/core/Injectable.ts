@@ -1,7 +1,7 @@
-import { Constructor } from "..";
-import { ChyanMetaKey, DesignMetaKey } from "../constant/symbol";
+import { ChyanMetaKey, DesignMetaKey } from "../constant/metakey";
+import { Constructor } from "../types/types";
 import { uuid } from "../vendors";
-import { attachMetadata, collectInjector, metaKeyIsExist } from "./metadata-storage";
+import { attachMetadata, collectInjector, metaKeyIsExist } from "./MetadataStorage";
 
 export function Injectable(callback?: InjectableCallback) {
   return (target: Constructor) => {

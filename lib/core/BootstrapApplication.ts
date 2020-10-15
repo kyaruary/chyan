@@ -1,10 +1,11 @@
-import { Chyan } from "./Chyan";
 import { RouterStorage } from "./router";
 import { connect } from "mongoose";
+import { Application } from "./Application";
+
 export abstract class BootstrapApplication {
-  readonly app = Chyan.createApplication();
+  readonly app = new Application();
+  readonly router = RouterStorage.getRouter();
   scanner: string[] | string = [];
-  router = RouterStorage.getRouter();
   useMongo = false;
   MongoUri = "";
 

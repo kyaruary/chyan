@@ -1,4 +1,4 @@
-0.2.7
-
-- export Document
-- refactor reflect mechanism
+[x] auto wired decorator
+[ ] vue ssr
+[ ] react ssr
+[ ] global pipe

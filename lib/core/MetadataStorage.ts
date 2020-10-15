@@ -1,7 +1,9 @@
 import { Constructor } from "../types/types";
 import "reflect-metadata";
 import { PriorityList } from "../utils/PriorityList";
-import { ChyanMetaKey, DesignMetaKey } from "../constant/symbol";
+import { ChyanMetaKey, DesignMetaKey } from "../constant/metakey";
+import { chyanLogger } from "../utils/chyanlog";
+import { isClass } from "../utils/CheckClassType";
 
 const metadataGC: Function[] = [];
 
@@ -19,17 +21,22 @@ export function destory() {
 }
 
 export function collectInjector(id: string, target: Constructor) {
-  !metadataStorage.get(id) && metadataStorage.set(id, target);
+  if (isClass(target)) {
+    !metadataStorage.get(id) && metadataStorage.set(id, target);
+    return true;
+  }
+  return false;
+  // Reflect.defineMetadata(DesignMetaKey.paramTypes, Reflect.getMetadata(DesignMetaKey.paramTypes, target), transferConstructor2Object(target));
 }
 
 //done
-export function fetchMetadata<T>(metaKey: string, target: Constructor): T | null;
-export function fetchMetadata<T>(metaKey: string, target: object): T | null;
-export function fetchMetadata<T>(metaKey: string, target: object, key: string | symbol): T | null;
-export function fetchMetadata<T>(metaKey: string, target: Constructor, key: string | symbol): T | null;
-export function fetchMetadata<T>(metaKey: string, target: object | Constructor, key?: symbol | string): T | null {
+export function fetchMetadata<T = any>(metaKey: string, target: Constructor): T | null;
+export function fetchMetadata<T = any>(metaKey: string, target: object): T | null;
+export function fetchMetadata<T = any>(metaKey: string, target: object, key: string | symbol): T | null;
+export function fetchMetadata<T = any>(metaKey: string, target: Constructor, key: string | symbol): T | null;
+export function fetchMetadata<T = any>(metaKey: string, target: object | Constructor, key?: symbol | string): T | null {
   checkMetaKeyIsValid(metaKey);
-  if (metaKey === DesignMetaKey.paramtypes) {
+  if (metaKey === DesignMetaKey.paramTypes && !key) {
     return Reflect.getMetadata(metaKey, target, key as any);
   }
   const ot = transferConstructor2Object(target);
@@ -46,9 +53,9 @@ export function attachMetadata(metaKey: string, value: any, target: object | Con
   const ot = transferConstructor2Object(target);
 
   if (metaKeyIsExist(metaKey, ot, key)) {
-    console.warn(`MetaKey: ${metaKey} already existed, it will be coverd by value: ${value}`);
+    chyanLogger.warn(`MetaKey: ${metaKey} already existed, it will be coverd by value: ${value}`);
   } else {
-    metadataGC.push(() => deleteMetaKey(metaKey, ot, key));
+    pushMetadataGCFunction(() => deleteMetaKey(metaKey, ot, key));
   }
   key ? Reflect.defineMetadata(metaKey, value, ot, key) : Reflect.defineMetadata(metaKey, value, ot);
 }
@@ -82,7 +89,7 @@ function deleteMetaKey(metaKey: string, target: object, key?: string): void {
 export function metadatas() {
   const list: PriorityList<InjectorMetadata> = new PriorityList();
   for (const [id, target] of metadataStorage) {
-    const argsTypes = fetchMetadata<Constructor[]>(DesignMetaKey.paramtypes, target) ?? [];
+    const argsTypes = fetchMetadata<Constructor[]>(DesignMetaKey.paramTypes, target) ?? [];
     const args_id = argsTypes.map((arg) => {
       if (!metaKeyIsExist(ChyanMetaKey.id, target)) throw `Injected Params ${arg.name} does not have a deocrator]`;
       return fetchMetadata<string>(ChyanMetaKey.id, arg)!;

@@ -1,6 +1,6 @@
 import { RouteMethod } from "../../constant/RouteMethods";
-import { metaKeyIsExist, attachMetadata, fetchMetadata } from "../../core/metadata-storage";
-import { RouteMetaKey } from "./share";
+import { metaKeyIsExist, attachMetadata, fetchMetadata } from "../../core/MetadataStorage";
+import { RouteMetaKey } from "./metakey";
 
 export function createRouterMethod(method: RouteMethod, suffix: string) {
   return (target: object, key: string, des: PropertyDescriptor) => {

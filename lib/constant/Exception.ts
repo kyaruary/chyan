@@ -1,6 +1,17 @@
-export enum Status {
-  NOT_FOUND = 404,
-  NO_AUTHORIZATION = 401,
+export enum HttpStatusCode {
+  BadRequest = 400,
+  Unauthorization = 401,
+  Forbidden = 403,
+  NotFound = 404,
+  MethodNotAllowed = 405,
+  NotAcceptable = 406,
+  RequestTimeout = 408,
+  Conflict = 409,
+  Gone = 410,
+  UnsupportedMediaType = 415,
+  InternalServerError = 500,
+  BadGateway = 502,
+  GatewayTimeout = 504,
 }
 
 export class HttpException extends Error {
@@ -10,37 +21,53 @@ export class HttpException extends Error {
 }
 
 export function NotFoundException() {
-  return new HttpException(Status.NOT_FOUND, "Not Found");
+  return new HttpException(HttpStatusCode.NotFound, "Not Found");
 }
 
-export function ParamsNotInvalideException() {
-  return new HttpException(Status.NO_AUTHORIZATION, "Params Invalide");
+export function BadGatewayException() {
+  return new HttpException(HttpStatusCode.BadGateway, "Bad Gateway");
 }
 
-//undo
+export function BadRequestException() {
+  return new HttpException(HttpStatusCode.BadRequest, "Bad Request");
+}
 
-// export function BadGatewayException() {}
+export function ConflictException() {
+  return new HttpException(HttpStatusCode.Conflict, "Conflict");
+}
 
-// export function BadRequestException() {}
+export function ForbiddenException() {
+  return new HttpException(HttpStatusCode.Forbidden, "Forbidden");
+}
 
-// export function ConflictException() {}
+export function GatewayTimeoutException() {
+  return new HttpException(HttpStatusCode.GatewayTimeout, "Gateway Time-out");
+}
 
-// export function ForbiddenException() {}
+export function GoneException() {
+  return new HttpException(HttpStatusCode.Gone, "Gone");
+}
 
-// export function GatewayTimeoutException() {}
+export function MethodNotAllowedException() {
+  return new HttpException(HttpStatusCode.MethodNotAllowed, "Method Not Allowed");
+}
 
-// export function GoneException() {}
+export function NotAcceptableException() {
+  return new HttpException(HttpStatusCode.NotAcceptable, "Not Acceptable");
+}
 
-// export function MethodNotAllowedException() {}
+export function RequestTimeoutException() {
+  return new HttpException(HttpStatusCode.RequestTimeout, "Request Time-out");
+}
 
-// export function NotAcceptableException() {}
+export function UnauthorizedException() {
+  return new HttpException(HttpStatusCode.Unauthorization, "Unauthorization");
+}
 
-// export function NotImplementedException() {}
+export function InternalServerErrorException() {
+  return new HttpException(HttpStatusCode.InternalServerError, "Internal Server Error");
+}
 
-// export function RequestTimeoutException() {}
-
-// export function UnauthorizedException() {}
-
-// export function InternalServerErrorException() {}
-
-// export function UnsupportedMediaTypeException() {}
+export function UnsupportedMediaTypeException() {
+  return new HttpException(HttpStatusCode.UnsupportedMediaType, "Unsupported Media Type");
+}

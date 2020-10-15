@@ -3,4 +3,5 @@ dist
 .vscode
 upload
 public
-log
+logs
+outputs
