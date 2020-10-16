@@ -1,7 +1,7 @@
 import { collectInjector, destory, fetchMetadata } from "../dist/core/MetadataStorage";
 import { fetchInjector, resolve } from "../dist/core/Ioc";
 import { Injectable } from "../dist/core/Injectable";
-import { ChyanMetaKey } from "../dist/constant/metakey";
+import { ChyanMetaKey, DesignMetaKey } from "../dist/constant/metakey";
 import { strictEqual } from "assert";
 import { AutoWired } from "../dist";
 export function testIoc() {

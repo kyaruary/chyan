@@ -15,7 +15,7 @@ export function _ControllerExtension(prefix = "", callback?: Function) {
   return Injectable((target) => {
     attachMetadata(RouteMetaKey.prefix, prefix, target);
     return {
-      afterIns(instance: object) {
+      done(instance) {
         const actions = fetchMetadata<string[]>(RouteMetaKey.actions, target) ?? [];
         const controllerMiddlewares = fetchMetadata<Function[]>(RouteMetaKey.middlewares, target) ?? [];
         for (const action of actions) {

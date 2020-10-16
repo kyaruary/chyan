@@ -20,7 +20,7 @@ function add(method: RouteMethod, prefix: string, suffix: string, callback: Func
         args[arg.index].value = (await arg.pipe?.(arg.value, arg.metatype)) ?? arg.value;
       }
     }
-    const result = await callback(...(useDefaultParameter ? [c] : args.map((arg) => arg.value)));
+    const result = await callback(...(useDefaultParameter ? [c, next] : args.map((arg) => arg.value)));
     if (result !== undefined) await MiddlewaresStorage.globalInterceptor.apply(result, c);
   });
 }

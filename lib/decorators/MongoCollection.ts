@@ -15,7 +15,7 @@ export function MongoCollection(name: string, schema: Schema) {
     attachMetadata(MongoMetaKey.collectionName, name, target);
     schema && attachMetadata(MongoMetaKey.schema, schema, target);
     return {
-      onIns(ot, args) {
+      packing(ot, args) {
         return model(name, schema);
       },
     };
@@ -25,7 +25,7 @@ export function MongoCollection(name: string, schema: Schema) {
 export function AutoIncrement(field: string, startAt = 0, incrementBy = 1) {
   return Injectable((target) => {
     return {
-      beforeIns() {
+      preparing() {
         autoIncrement.initialize(connection);
         const schema = fetchMetadata(MongoMetaKey.schema, target) ?? new Schema();
         if (!schema) {

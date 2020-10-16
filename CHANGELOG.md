@@ -1,3 +1,20 @@
+[2020/10/16] v0.4.5
+
+- forgot build dist ;)
+
+[2020/10/16] v0.4.4
+
+- add async before next! otherwise will Cause an unexpected error
+
+[2020/10/16] v0.4.3
+
+- change default parameter c:ChyanConetxt -> c:ChyanContext, next:ChyanNext
+- add sealMetadata & testing
+
+[2020/10/13] v0.4.2
+
+- middlewares -> UseMiddlewares
+
 [2020/10/13] v0.4.1
 
 - add unit testing
