@@ -1,3 +1,7 @@
+[2020/10/16] v0.4.6
+
+- export SchemaTypes from mongoose
+
 [2020/10/16] v0.4.5
 
 - forgot build dist ;)
