@@ -1,5 +1,5 @@
-import assert from "assert";
-import { attachMetadata, destory, fetchMetadata } from "../dist/core/MetadataStorage";
+import assert, { strictEqual } from "assert";
+import { attachMetadata, destory, fetchMetadata, sealMetadata } from "../dist/core/MetadataStorage";
 
 export function testMetadata() {
   const metakey = {
@@ -15,7 +15,7 @@ export function testMetadata() {
     member: "test-member",
   };
 
-  describe("attach metadat & fetch metadata", function () {
+  describe("attach metadata & fetch metadata & seal metadata", function () {
     beforeEach(function () {
       destory();
     });
@@ -194,6 +194,22 @@ export function testMetadata() {
         it(`${metakey.method} from class prototype must be null`, function () {
           assert.strictEqual(method, null);
         });
+      });
+    });
+
+    describe("seal metadata", function () {
+      class Test {}
+
+      attachMetadata("test:id", "123", Test);
+      sealMetadata(Test);
+      attachMetadata("test:other", "234", Test);
+      const id = fetchMetadata("test:id", Test);
+      const other = fetchMetadata("tets:other", Test);
+      it("fetch id should be 123", function () {
+        strictEqual("123", id);
+      });
+      it("fetch other shoule be null", function () {
+        strictEqual(null, other);
       });
     });
   });

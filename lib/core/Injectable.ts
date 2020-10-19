@@ -11,10 +11,11 @@ export function Injectable(callback?: InjectableCallback) {
       collectInjector(id, target);
     }
     if (callback) {
-      const { beforeIns, onIns, afterIns } = (callback(target) ?? {}) as Partial<InjectorLife>;
-      beforeIns && attachMetadata(ChyanMetaKey.beforeIns, beforeIns, target);
-      onIns && attachMetadata(ChyanMetaKey.onIns, onIns, target);
-      afterIns && attachMetadata(ChyanMetaKey.afterIns, afterIns, target);
+      const { preparing, packing, wiring, done } = (callback(target) ?? {}) as Partial<InjectorLife>;
+      typeof preparing === "function" && attachMetadata(ChyanMetaKey.preparing, preparing, target);
+      typeof packing === "function" && attachMetadata(ChyanMetaKey.packing, packing, target);
+      typeof wiring === "function" && attachMetadata(ChyanMetaKey.wiring, wiring, target);
+      typeof done === "function" && attachMetadata(ChyanMetaKey.done, done, target);
     }
   };
 }
@@ -24,7 +25,8 @@ export type InjectableCallback = (target: Constructor) => Partial<InjectorLife> 
 export type onIns = (instance: object) => void;
 
 export interface InjectorLife {
-  beforeIns(): void; //改变metadata的最后时间
-  onIns(target: Constructor, args: object[]): object | void; // 提供实例化信息， 返回一个其他对象替代本来应该实例的对象
-  afterIns(instance: object): void; // 对实例化对对象进行其他操作
+  preparing<T>(target: Constructor<T>): void;
+  packing<T>(target: Constructor<T>, args: any[]): any;
+  wiring<T = object>(target: T, key: string, value: any, type: any): any;
+  done<T = object>(target: T): void;
 }

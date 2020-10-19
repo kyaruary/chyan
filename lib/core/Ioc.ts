@@ -2,7 +2,7 @@ import { trace } from "console";
 import { ChyanMetaKey } from "../constant/metakey";
 import { chyanLogger } from "../utils/chyanlog";
 import { Wires } from "./AutoWired";
-import { destory, fetchMetadata, metadatas } from "./MetadataStorage";
+import { destory, fetchMetadata, metadatas, sealMetadata } from "./MetadataStorage";
 
 const pool: Map<string, Injector> = new Map();
 
@@ -51,44 +51,40 @@ export async function resolve() {
       }
     }
 
-    const prepareHandler = fetchMetadata<Function>(ChyanMetaKey.prepare, node.target);
+    await fetchMetadata<Function>(ChyanMetaKey.preparing, node.target)?.(node.target);
 
-    const packingHandler = fetchMetadata<Function>(ChyanMetaKey.packing, node.target);
-
-    const doneHandler = fetchMetadata<Function>(ChyanMetaKey.done, node.target);
-
-    const handleBeforeIns = fetchMetadata<Function>(ChyanMetaKey.beforeIns, node.target);
-
-    if (handleBeforeIns !== null) await handleBeforeIns(node.target, args);
-
-    const handleOnIns = fetchMetadata<Function>(ChyanMetaKey.onIns, node.target);
+    sealMetadata(node.target);
 
     let changedObj: object | null = null;
 
-    if (handleOnIns !== null) changedObj = await handleOnIns(node.target, args);
+    changedObj = await fetchMetadata<Function>(ChyanMetaKey.packing, node.target)?.(node.target, args);
 
     const o = changedObj ?? Reflect.construct(node.target, args);
 
-    const handleAfterIns = fetchMetadata<Function>(ChyanMetaKey.afterIns, node.target);
-
-    if (handleAfterIns !== null) await handleAfterIns(o);
-
     const wires = fetchMetadata<Wires[]>(ChyanMetaKey.wires, node.target) ?? [];
 
-    const notPushPool = fetchMetadata<boolean>(ChyanMetaKey.noninvasive, node.target);
+    if (wires.length === 0) {
+      const doneHandler = fetchMetadata<Function>(ChyanMetaKey.done, node.target);
+      await doneHandler?.(o);
+    }
 
-    notPushPool || pool.set(node.id, { id: node.id, instance: o, wires });
+    pool.set(node.id, { id: node.id, instance: o, wires });
   }
 
-  for (const [id, injector] of pool) {
-    for (const wire of injector.wires) {
-      const id = fetchMetadata<string>(ChyanMetaKey.id, wire.type);
-      if (id) {
-        injector.instance[wire.key] = pool.get(id)?.instance;
-      } else {
-        chyanLogger.fatal(`${injector.instance.constructor}的属性注入${wire.type.name}不存在！`);
-        process.exit();
+  for (const [_, injector] of pool) {
+    if (injector.wires.length !== 0) {
+      const wiringHandle = fetchMetadata<Function>(ChyanMetaKey.wiring, injector.instance);
+      for (const wire of injector.wires) {
+        const id = fetchMetadata<string>(ChyanMetaKey.id, wire.type);
+        if (id) {
+          injector.instance[wire.key] = pool.get(id)?.instance;
+          await wiringHandle?.(injector.instance, wire.key, pool.get(id)?.instance, wire.type);
+        } else {
+          chyanLogger.fatal(`${injector.instance.constructor}的属性注入${wire.type.name}不存在！`);
+          process.exit();
+        }
       }
+      await fetchMetadata<Function>(ChyanMetaKey.done, injector.instance)?.(injector.instance);
     }
   }
 }

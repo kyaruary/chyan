@@ -9,9 +9,18 @@ const metadataGC: Function[] = [];
 
 const metadataStorage = new Map<string, Constructor>();
 
+const sealMetadataKey = Symbol("seal");
+
 export function pushMetadataGCFunction(fn: Function) {
   metadataGC.push(fn);
 }
+const defineMetadata = Reflect.defineMetadata.bind(Reflect);
+
+Reflect.defineMetadata = function (...args: any[]) {
+  const isSeal = fetchMetadata(sealMetadataKey, args[2]);
+  //@ts-ignore
+  !isSeal && defineMetadata(...args);
+};
 
 export function destory() {
   for (const fn of metadataGC) {
@@ -30,11 +39,11 @@ export function collectInjector(id: string, target: Constructor) {
 }
 
 //done
-export function fetchMetadata<T = any>(metaKey: string, target: Constructor): T | null;
-export function fetchMetadata<T = any>(metaKey: string, target: object): T | null;
-export function fetchMetadata<T = any>(metaKey: string, target: object, key: string | symbol): T | null;
-export function fetchMetadata<T = any>(metaKey: string, target: Constructor, key: string | symbol): T | null;
-export function fetchMetadata<T = any>(metaKey: string, target: object | Constructor, key?: symbol | string): T | null {
+export function fetchMetadata<T = any>(metaKey: string | Symbol, target: Constructor): T | null;
+export function fetchMetadata<T = any>(metaKey: string | Symbol, target: object): T | null;
+export function fetchMetadata<T = any>(metaKey: string | Symbol, target: object, key: string | symbol): T | null;
+export function fetchMetadata<T = any>(metaKey: string | Symbol, target: Constructor, key: string | symbol): T | null;
+export function fetchMetadata<T = any>(metaKey: string | Symbol, target: object | Constructor, key?: symbol | string): T | null {
   checkMetaKeyIsValid(metaKey);
   if (metaKey === DesignMetaKey.paramTypes && !key) {
     return Reflect.getMetadata(metaKey, target, key as any);
@@ -52,18 +61,30 @@ export function attachMetadata(metaKey: string, value: any, target: object | Con
   checkMetaKeyIsValid(metaKey);
   const ot = transferConstructor2Object(target);
 
+  const isSeal = fetchMetadata(sealMetadataKey, ot);
+
+  if (isSeal) {
+    return;
+  }
   if (metaKeyIsExist(metaKey, ot, key)) {
     chyanLogger.warn(`MetaKey: ${metaKey} already existed, it will be coverd by value: ${value}`);
   } else {
     pushMetadataGCFunction(() => deleteMetaKey(metaKey, ot, key));
   }
-  key ? Reflect.defineMetadata(metaKey, value, ot, key) : Reflect.defineMetadata(metaKey, value, ot);
+  Reflect.defineMetadata(metaKey, value, ot, key as any);
 }
 
-function checkMetaKeyIsValid(metaKey: string) {
-  if (metaKey.split(":").length !== 2) {
+function checkMetaKeyIsValid(metaKey: string | Symbol) {
+  if (metaKey instanceof Symbol || typeof metaKey === "symbol") {
+    return;
+  }
+  if (typeof metaKey === "string" && metaKey.split(":").length !== 2) {
     throw `Not Valid MetaKey: ${metaKey}, use format like 'prefix:key' please`;
   }
+}
+
+export function sealMetadata(target: Constructor<object>) {
+  Reflect.defineMetadata(sealMetadataKey, true, target);
 }
 
 /**

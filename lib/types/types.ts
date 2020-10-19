@@ -6,4 +6,4 @@ export type ChyanContext = Context;
 
 export type ChyanNext = Next;
 
-export { Document, Schema, SchemaOptions } from "mongoose";
+export { Document, Schema, SchemaOptions, SchemaTypes } from "mongoose";

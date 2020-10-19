@@ -48,7 +48,7 @@ export class Application {
         await next();
       } catch (e) {
         console.log(e);
-        MiddlewaresStorage.globalExceptionFilter.catch(e, ctx);
+        await MiddlewaresStorage.globalExceptionFilter.catch(e, ctx);
       }
     });
 
@@ -59,7 +59,7 @@ export class Application {
       if (c.url.match(this.globalGuardPath)) {
         await MiddlewaresStorage.globalGuard.canActive(c);
       }
-      next();
+      await next();
     });
 
     for (const m of MiddlewaresStorage.middlewares) {

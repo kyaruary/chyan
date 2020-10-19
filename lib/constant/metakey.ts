@@ -4,11 +4,10 @@ export enum ChyanMetaKey {
   beforeIns = "chyan:before-ins",
   afterIns = "chyan:after-ins",
   wires = "chyan:auto-wired-wires",
-  prepare = "chyan:ins-prepare",
+  preparing = "chyan:ins-preparing",
   packing = "chyan:ins-packing",
-  wired = "chyan:ins-wired",
+  wiring = "chyan:ins-wiring",
   done = "chyan:ins-done",
-  noninvasive = "chyan:noninvasive",
 }
 
 export enum DesignMetaKey {

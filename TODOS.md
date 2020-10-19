@@ -2,3 +2,4 @@
 [ ] vue ssr
 [ ] react ssr
 [ ] global pipe
+[ ] life circle
