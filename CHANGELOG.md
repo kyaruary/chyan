@@ -1,4 +1,4 @@
-[2020/10/16] v0.4.6
+[2020/10/16] v0.4.6 & v0.4.7
 
 - export SchemaTypes from mongoose
 
