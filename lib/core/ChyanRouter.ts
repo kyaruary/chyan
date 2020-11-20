@@ -1,4 +1,4 @@
-import { Injectable } from "@chyan/ioc";
+import { Injectable } from "accioo";
 import Router from "koa-router";
 import { ChyanContext, ChyanNext } from "..";
 import { RouterMetaStorage } from "./RouterMetaStorage";

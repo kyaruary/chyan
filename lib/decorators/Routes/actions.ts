@@ -1,4 +1,4 @@
-import { attachMetadata, fetchMetadata, metaKeyIsExist } from "@chyan/ioc";
+import { attachMetadata, fetchMetadata, metaKeyIsExist } from "accioo";
 import { RouteMethod } from "../../constant/RouteMethods";
 import { RouteMetaKey } from "./metakey";
 

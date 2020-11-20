@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-"@chyan/ioc@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.npm.taobao.org/@chyan/ioc/download/@chyan/ioc-1.3.1.tgz?cache=0&sync_timestamp=1603763679392&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40chyan%2Fioc%2Fdownload%2F%40chyan%2Fioc-1.3.1.tgz#6fab90c5a40dce7f1ddbdab4ef7f465f5948f72f"
-  integrity sha1-b6uQxaQNzn8d29q0739GX1lI9y8=
-  dependencies:
-    reflect-metadata "^0.1.13"
-
 "@types/accepts@*":
   version "1.3.5"
   resolved "https://registry.npm.taobao.org/@types/accepts/download/@types/accepts-1.3.5.tgz#c34bec115cfc746e04fe5a059df4ce7e7b391575"
@@ -205,6 +198,13 @@ accepts@^1.3.5:
   dependencies:
     mime-types "~2.1.24"
     negotiator "0.6.2"
+
+accioo@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/accioo/download/accioo-1.0.0.tgz#7c706a7ea2b3f964b41c1e86d99a6a9526da7241"
+  integrity sha1-fHBqfqKz+WS0HB6G2ZpqlSbackE=
+  dependencies:
+    reflect-metadata "^0.1.13"
 
 ansi-colors@4.1.1:
   version "4.1.1"

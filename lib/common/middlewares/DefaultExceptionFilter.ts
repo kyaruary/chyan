@@ -1,4 +1,4 @@
-import { Injectable } from "@chyan/ioc";
+import { Injectable } from "accioo";
 import { HttpException } from "../../constant/Exception";
 import { ChyanContext, ChyanExceptionFilter } from "../../types";
 

@@ -13,7 +13,7 @@
     "typescript",
     "decorators",
     "DI",
-    "@chyan/ioc",
+    "accioo",
     "koa2"
   ],
   "maintainers": [
@@ -27,10 +27,10 @@
     "test:dev": "yarn test:build &&  yarn test"
   },
   "dependencies": {
-    "@chyan/ioc": "^1.3.1",
     "@types/koa": "^2.11.3",
     "@types/mongodb": "^3.5.26",
     "@types/mongoose": "^5.7.36",
+    "accioo": "^1.0.0",
     "dotenv": "^8.2.0",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",

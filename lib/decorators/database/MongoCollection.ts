@@ -1,4 +1,4 @@
-import { Injectable, attachMetadata, fetchMetadata } from "@chyan/ioc";
+import { Injectable, attachMetadata, fetchMetadata } from "accioo";
 import { connection, model, Schema } from "mongoose";
 
 import autoIncrement from "mongoose-auto-increment";

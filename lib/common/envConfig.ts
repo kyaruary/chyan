@@ -1,4 +1,4 @@
-import { Injectable } from "@chyan/ioc";
+import { Injectable } from "accioo";
 import { config } from "dotenv";
 import { resolve } from "path";
 

@@ -1,4 +1,4 @@
-import { attachMetadata, fetchMetadata } from "@chyan/ioc";
+import { attachMetadata, fetchMetadata } from "accioo";
 import { ChyanContext, ChyanNext, Constructor } from "../../types";
 import { RouteMetaKey } from "./metakey";
 

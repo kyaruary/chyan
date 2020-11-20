@@ -1,4 +1,4 @@
-import { attachMetadata } from "@chyan/ioc";
+import { attachMetadata } from "accioo";
 import { Constructor } from "../../types/types";
 import { RouteMetaKey } from "./metakey";
 

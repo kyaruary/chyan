@@ -26,7 +26,7 @@ yarn tsc --init
 
 ```ts
 import { Get, Controller, Application } from "chyan";
-import { ChyanApplication } from "@chyan/ioc";
+import { ChyanApplication } from "accioo";
 
 @ChyanApplication()
 @Controller()

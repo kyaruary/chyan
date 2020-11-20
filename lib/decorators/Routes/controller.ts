@@ -1,6 +1,6 @@
 import { RouteMethod } from "../../constant/RouteMethods";
 import { RouterMetaStorage } from "../../core/RouterMetaStorage";
-import { attachMetadata, DesignMetaKey, fetchMetadata, Injectable } from "@chyan/ioc";
+import { attachMetadata, MetaKey, fetchMetadata, Injectable } from "accioo";
 import { RouteMetaKey } from "./metakey";
 import { Constructor } from "../../types/types";
 import { ArgsMetadata, ArgsValueMetadata } from "./args";
@@ -15,7 +15,7 @@ export function Controller(prefix = "") {
         for (const action of actions) {
           const suffix = fetchMetadata<string>(RouteMetaKey.suffix, target, action)!;
           const method = fetchMetadata<RouteMethod>(RouteMetaKey.method, target, action)!;
-          const argTypes = fetchMetadata<Constructor[]>(DesignMetaKey.paramTypes, target, action)!;
+          const argTypes = fetchMetadata<Constructor[]>(MetaKey.paramTypes, target, action)!;
           const argsValueMetadata = fetchMetadata<ArgsValueMetadata[]>(RouteMetaKey.args, target, action) ?? [];
           const argsMetadata: ArgsMetadata[] = [];
           for (const avm of argsValueMetadata) {

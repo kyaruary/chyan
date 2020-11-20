@@ -1,5 +1,5 @@
 import { KoaMiddleware, ChyanExceptionFilter, ChyanMiddleware, ChyanInterceptor } from "../types/types";
-import { Injectable } from "@chyan/ioc";
+import { Injectable } from "accioo";
 import { DefaultInterceptor } from "../common/middlewares/DefaultInterceptor";
 import { DefaultExceptionFilter } from "../common/middlewares/DefaultExceptionFilter";
 
@@ -26,5 +26,13 @@ export class MiddlewaresStorage {
 
   addChyanMiddleware(middleware: ChyanMiddleware) {
     this.middlewares.push(middleware.apply.bind(middleware));
+  }
+
+  getNextPosition() {
+    return this.middlewares.length;
+  }
+
+  insert(n: number, middleware: KoaMiddleware<any, any>) {
+    this._middlewares.splice(n, 0, middleware);
   }
 }

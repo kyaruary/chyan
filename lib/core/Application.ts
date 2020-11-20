@@ -3,15 +3,19 @@ import cookie from "koa-cookie";
 import { MiddlewaresStorage } from "./MiddlewareStorage";
 import { ChyanMiddleware, Constructor, KoaMiddleware, ChyanExceptionFilter, ChyanInterceptor } from "../types/types";
 import { ChyanRouter } from "./ChyanRouter";
-import { Injectable, ioc } from "@chyan/ioc";
+import { Injectable, ioc } from "accioo";
 import { ChyanLogger } from "../common/logger";
 import { loader } from "./loader";
-import { RawKoaApplication } from "./RawKoaApplication";
 import { NotFoundException } from "../constant/Exception";
+import KoaApplication from "koa";
+
+@Injectable()
+export class RawKoaApplication extends KoaApplication {}
 
 @Injectable()
 export class Application {
   private routerPaths: { root: string; fileReg?: RegExp }[] = [];
+  private routerIndex = -1;
 
   constructor(private logger: ChyanLogger, private ms: MiddlewaresStorage, private app: RawKoaApplication, private router: ChyanRouter) {}
 
@@ -29,7 +33,7 @@ export class Application {
   }
 
   private throwNotFountInIocError(name: string) {
-    this.logger.fatal(`Could Not Found Class: ${name}, Use @Injectable Above It!`);
+    this.logger.fatal(`Use @Injectable() Above Class: ${name} !`);
   }
 
   useGlobalInterceptor(interceptor: Constructor<ChyanInterceptor>) {
@@ -54,8 +58,9 @@ export class Application {
 
   scanRouter(root: string, fileReg?: RegExp) {
     this.routerPaths.push({ root, fileReg });
-    this.use(this.router.getRouter().routes());
-    this.use(this.router.getRouter().allowedMethods());
+    if (this.routerIndex === -1) {
+      this.routerIndex = this.ms.getNextPosition();
+    }
     return this;
   }
 
@@ -65,6 +70,11 @@ export class Application {
     }
 
     this.router.resolve();
+
+    if (this.routerIndex !== -1) {
+      this.ms.insert(this.routerIndex, this.router.getRouter().routes());
+      this.ms.insert(this.routerIndex + 1, this.router.getRouter().allowedMethods());
+    }
 
     this.app.use(bodyParser());
     this.app.use(cookie());
@@ -80,7 +90,8 @@ export class Application {
     this.app.use(async (ctx, next) => {
       await this.ms.globalInterceptor.transform(ctx);
       const body = await next();
-      if (body !== undefined && ctx.status === 200) {
+      if (body !== undefined) {
+        ctx.status = 200;
         await this.ms.globalInterceptor.intercept(body, ctx);
       }
     });
