@@ -1,17 +1,11 @@
 import { RouteMethod } from "../../constant/RouteMethods";
-import { DesignMetaKey } from "../../constant/metakey";
-import { attachMetadata, fetchMetadata } from "../../core/MetadataStorage";
-import { RouterStorage } from "../../core/router";
-import { Injectable } from "../../core/Injectable";
+import { RouterMetaStorage } from "../../core/RouterMetaStorage";
+import { attachMetadata, DesignMetaKey, fetchMetadata, Injectable } from "@chyan/ioc";
 import { RouteMetaKey } from "./metakey";
 import { Constructor } from "../../types/types";
 import { ArgsMetadata, ArgsValueMetadata } from "./args";
 
 export function Controller(prefix = "") {
-  return _ControllerExtension(prefix);
-}
-
-export function _ControllerExtension(prefix = "", callback?: Function) {
   return Injectable((target) => {
     attachMetadata(RouteMetaKey.prefix, prefix, target);
     return {
@@ -31,9 +25,8 @@ export function _ControllerExtension(prefix = "", callback?: Function) {
             };
           }
           const actionMiddlewares = fetchMetadata<Function[]>(RouteMetaKey.middlewares, target, action) ?? [];
-          RouterStorage.add(method, prefix, suffix, instance[action].bind(instance), argsMetadata, [...controllerMiddlewares, ...actionMiddlewares]);
+          RouterMetaStorage.collect(method, prefix, suffix, instance[action].bind(instance), argsMetadata, [...controllerMiddlewares, ...actionMiddlewares]);
         }
-        callback?.(instance);
       },
     };
   });

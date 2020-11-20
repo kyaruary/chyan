@@ -1,17 +1,17 @@
-import { attachMetadata, fetchMetadata } from "../../core/MetadataStorage";
-import { ChyanContext, ChyanNext } from "../../types";
+import { attachMetadata, fetchMetadata } from "@chyan/ioc";
+import { ChyanContext, ChyanNext, Constructor } from "../../types";
 import { RouteMetaKey } from "./metakey";
 
-export function Body(field?: string, pipe?: PipeFunction) {
-  return createArgumentsDecorator((c: ChyanContext) => (field ? c.request.body[field] : c.request.body), true, pipe);
+export function Body(field?: string, pipe?: Constructor<ChyanPipe>) {
+  return createArgumentsDecorator((c: ChyanContext) => (field ? c.request.body[field] : c.request.body), pipe);
 }
 
-export function Query(field?: string, pipe?: PipeFunction) {
-  return createArgumentsDecorator((c: ChyanContext) => (field ? c.query[field] : c.query), true, pipe);
+export function Query(field?: string, pipe?: Constructor<ChyanPipe>) {
+  return createArgumentsDecorator((c: ChyanContext) => (field ? c.query[field] : c.query), pipe);
 }
 
-export function Params(field?: string, pipe?: PipeFunction) {
-  return createArgumentsDecorator((c: ChyanContext) => (field ? c.params[field] : c.params), true, pipe);
+export function Params(field?: string, pipe?: Constructor<ChyanPipe>) {
+  return createArgumentsDecorator((c: ChyanContext) => (field ? c.params[field] : c.params), pipe);
 }
 
 export function Next() {
@@ -46,26 +46,29 @@ export function Uploads() {
   return createArgumentsDecorator((c: ChyanContext) => c.files);
 }
 
-export type ArgumentsCreatedFunction = (c: ChyanContext, next: ChyanNext) => any;
+export type CreateArgumentsFunction = (c: ChyanContext, next: ChyanNext) => any;
 
-export function createArgumentsDecorator(callback: ArgumentsCreatedFunction, usePipe = false, pipe?: PipeFunction) {
+export function createArgumentsDecorator(callback: CreateArgumentsFunction, pipe?: Constructor<ChyanPipe>) {
   return (target: object, key: string, index: number) => {
     if (!fetchMetadata(RouteMetaKey.args, target, key)) {
       attachMetadata(RouteMetaKey.args, [], target, key);
     }
-    fetchMetadata<ArgsValueMetadata[]>(RouteMetaKey.args, target, key)?.push({ useValue: callback, pipe, index, usePipe });
+    fetchMetadata<ArgsValueMetadata[]>(RouteMetaKey.args, target, key)?.push({ useValue: callback, pipe, index });
   };
 }
 
 export type PipeFunction = (value: any, type: any) => any;
 
 export interface ArgsValueMetadata {
-  useValue: ArgumentsCreatedFunction;
-  pipe?: PipeFunction;
+  useValue: CreateArgumentsFunction;
+  pipe?: Constructor<ChyanPipe>;
   index: number;
-  usePipe: boolean;
 }
 
 export interface ArgsMetadata extends ArgsValueMetadata {
   metatype: any;
+}
+
+export interface ChyanPipe {
+  validate(): void;
 }

@@ -1,8 +1,7 @@
-import { Injectable } from "../core/Injectable";
+import { Injectable, attachMetadata, fetchMetadata } from "@chyan/ioc";
 import { connection, model, Schema } from "mongoose";
-import { attachMetadata, fetchMetadata } from "../core/MetadataStorage";
+
 import autoIncrement from "mongoose-auto-increment";
-import { chyanLogger } from "../utils/chyanlog";
 
 enum MongoMetaKey {
   collectionName = "chyan:mongoose-name",
@@ -28,10 +27,6 @@ export function AutoIncrement(field: string, startAt = 0, incrementBy = 1) {
       preparing() {
         autoIncrement.initialize(connection);
         const schema = fetchMetadata(MongoMetaKey.schema, target) ?? new Schema();
-        if (!schema) {
-          chyanLogger.fatal(`Must Provide A Model Schema Via MongoCollection Second Parameter`);
-          process.exit();
-        }
         const name = fetchMetadata<string>(MongoMetaKey.collectionName, target);
         (<Schema>schema).plugin(autoIncrement.plugin, { model: name, field, startAt, incrementBy });
       },

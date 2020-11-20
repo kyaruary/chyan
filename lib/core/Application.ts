@@ -1,79 +1,101 @@
 import bodyParser from "koa-bodyparser";
-import KoaApplication, { Middleware } from "koa";
 import cookie from "koa-cookie";
-import Router from "koa-router";
-import { GlobalExceptionFilter, GlobalPipe, GlobalInterceptor, MiddlewaresStorage, CanActive, GlobalMiddleware } from "./MiddlewareStorage";
-import { ChyanContext, ChyanNext, Constructor } from "../types/types";
-import { threadId } from "worker_threads";
-import { nextTick } from "process";
+import { MiddlewaresStorage } from "./MiddlewareStorage";
+import { ChyanMiddleware, Constructor, KoaMiddleware, ChyanExceptionFilter, ChyanInterceptor } from "../types/types";
+import { ChyanRouter } from "./ChyanRouter";
+import { Injectable, ioc } from "@chyan/ioc";
+import { ChyanLogger } from "../common/logger";
+import { loader } from "./loader";
+import { RawKoaApplication } from "./RawKoaApplication";
+import { NotFoundException } from "../constant/Exception";
 
-// 包装koaApplication类
+@Injectable()
 export class Application {
-  private koaApplication = new KoaApplication();
-  private globalGuardPath: RegExp = /^\//;
-  constructor() {}
+  private routerPaths: { root: string; fileReg?: RegExp }[] = [];
 
-  useGlobalMiddleware(middleware: Middleware | Constructor<GlobalMiddleware> | GlobalMiddleware) {
-    MiddlewaresStorage.addMiddleware(middleware);
+  constructor(private logger: ChyanLogger, private ms: MiddlewaresStorage, private app: RawKoaApplication, private router: ChyanRouter) {}
+
+  use<T = {}, S = {}>(middleware: KoaMiddleware<T, S>) {
+    this.ms.addKoaMiddleware(middleware);
+    return this;
   }
 
-  useGlobalGuard(guard: Constructor<CanActive>, path?: RegExp) {
-    if (path) this.globalGuardPath = path;
-    MiddlewaresStorage.globalGuard = MiddlewaresStorage.fetchMiddlewareViaPool(guard);
+  useGlobalMiddleware(middleware: Constructor<ChyanMiddleware>) {
+    if (middleware.toString().slice(0, 5) === "class") {
+      const m = ioc.fetchInjectorViaClass<ChyanMiddleware>(middleware as Constructor<ChyanMiddleware>);
+      this.use(m!.apply.bind(m));
+      return this;
+    }
   }
 
-  useGlobalInterceptor(interceptor: Constructor<GlobalInterceptor>) {
-    MiddlewaresStorage.globalInterceptor = MiddlewaresStorage.fetchMiddlewareViaPool(interceptor);
+  private throwNotFountInIocError(name: string) {
+    this.logger.fatal(`Could Not Found Class: ${name}, Use @Injectable Above It!`);
   }
 
-  useGlobalExceptionFilter(filter: Constructor<GlobalExceptionFilter>) {
-    MiddlewaresStorage.globalExceptionFilter = MiddlewaresStorage.fetchMiddlewareViaPool(filter);
+  useGlobalInterceptor(interceptor: Constructor<ChyanInterceptor>) {
+    const i = ioc.fetchInjectorViaClass(interceptor);
+    if (i !== null) {
+      this.ms.globalInterceptor = i;
+    } else {
+      this.throwNotFountInIocError(interceptor.name);
+    }
+    return this;
   }
 
-  // useGlobalPipe(pipe: PipeConstructor) {
-  //   this.u(pipe, MiddlewareTypes.Pipe);
-  // }
-
-  useRouter(router: Router) {
-    MiddlewaresStorage.addRouter(router);
+  useGlobalExceptionFilter(filter: Constructor<ChyanExceptionFilter>) {
+    const f = ioc.fetchInjectorViaClass(filter);
+    if (f !== null) {
+      this.ms.globalExceptionFilter = f;
+    } else {
+      this.throwNotFountInIocError(filter.name);
+    }
+    return this;
   }
 
-  getKoaApplication() {
-    return this.koaApplication;
+  scanRouter(root: string, fileReg?: RegExp) {
+    this.routerPaths.push({ root, fileReg });
+    this.use(this.router.getRouter().routes());
+    this.use(this.router.getRouter().allowedMethods());
+    return this;
   }
 
   async run(port = 8080, hostname = "localhost") {
-    this.koaApplication.use(async (ctx, next) => {
+    for (const routerPath of this.routerPaths) {
+      await loader.load(routerPath.root, routerPath.fileReg);
+    }
+
+    this.router.resolve();
+
+    this.app.use(bodyParser());
+    this.app.use(cookie());
+
+    this.app.use(async (ctx, next) => {
       try {
         await next();
       } catch (e) {
-        console.log(e);
-        await MiddlewaresStorage.globalExceptionFilter.catch(e, ctx);
+        await this.ms.globalExceptionFilter.catch(e, ctx);
       }
     });
 
-    this.koaApplication.use(bodyParser());
-    this.koaApplication.use(cookie());
-
-    this.koaApplication.use(async (c: ChyanContext, next: ChyanNext) => {
-      if (c.url.match(this.globalGuardPath)) {
-        await MiddlewaresStorage.globalGuard.canActive(c);
+    this.app.use(async (ctx, next) => {
+      await this.ms.globalInterceptor.transform(ctx);
+      const body = await next();
+      if (body !== undefined && ctx.status === 200) {
+        await this.ms.globalInterceptor.intercept(body, ctx);
       }
-      await next();
     });
 
-    for (const m of MiddlewaresStorage.middlewares) {
-      if (m.type === "router") {
-        const router = m.middleware as Router;
-        this.koaApplication.use(router.routes()).use(router.allowedMethods());
-      } else {
-        this.koaApplication.use(m.middleware as Middleware);
-      }
+    for (const m of this.ms.middlewares) {
+      this.app.use(m);
     }
 
-    return new Promise((resolve, reject) => {
-      this.koaApplication.listen(port, hostname, () => {
-        console.log(`server is running on  http://${hostname}:${port}`);
+    this.app.use(async (ctx, next) => {
+      throw NotFoundException();
+    });
+
+    return new Promise((resolve) => {
+      this.app.listen(port, hostname, () => {
+        this.logger.info(`server is running on  http://${hostname}:${port}`);
         resolve();
       });
     });

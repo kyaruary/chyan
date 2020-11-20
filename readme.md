@@ -1,14 +1,38 @@
 # Chyan
 
-A web framework base on koa & typescript & DI & decorators
+DEVELOPER FRIENDLY NODEJS WEB FRAMEWORK
 
-# Quick Start
+## Installation
+
+```bash
+mkdir your-project && cd your-project
+yarn add chyan
+yarn tsc --init
+```
+
+> make sure that your tsconfig.json file contain this
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2016",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
+```
+
+## Quick Start
 
 ```ts
-import { ChyanApplication, Get, BootstrapApplication } from "chyan";
+import { Get, Controller, Application } from "chyan";
+import { ChyanApplication } from "@chyan/ioc";
 
 @ChyanApplication()
-export class Application extends BootstrapApplication {
+@Controller()
+export class App {
+  constructor(private router: ChyanRouter, private app: Application) {}
+
   main() {
     this.app.useRouter(this.router);
     this.app.run();
@@ -19,14 +43,4 @@ export class Application extends BootstrapApplication {
     return "chyan.co";
   }
 }
-```
-
-make sure that your tsconfig.json file contain this
-
-```json
-"compilerOptions": {
-    "target": "ES2016",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-  }
 ```

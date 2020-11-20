@@ -2,6 +2,13 @@
 # yarn lockfile v1
 
 
+"@chyan/ioc@^1.3.1":
+  version "1.3.1"
+  resolved "https://registry.npm.taobao.org/@chyan/ioc/download/@chyan/ioc-1.3.1.tgz?cache=0&sync_timestamp=1603763679392&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40chyan%2Fioc%2Fdownload%2F%40chyan%2Fioc-1.3.1.tgz#6fab90c5a40dce7f1ddbdab4ef7f465f5948f72f"
+  integrity sha1-b6uQxaQNzn8d29q0739GX1lI9y8=
+  dependencies:
+    reflect-metadata "^0.1.13"
+
 "@types/accepts@*":
   version "1.3.5"
   resolved "https://registry.npm.taobao.org/@types/accepts/download/@types/accepts-1.3.5.tgz#c34bec115cfc746e04fe5a059df4ce7e7b391575"
@@ -131,13 +138,6 @@
   version "8.0.3"
   resolved "https://registry.npm.taobao.org/@types/mocha/download/@types/mocha-8.0.3.tgz#51b21b6acb6d1b923bbdc7725c38f9f455166402"
   integrity sha1-UbIbasttG5I7vcdyXDj59FUWZAI=
-
-"@types/moment@^2.13.0":
-  version "2.13.0"
-  resolved "https://registry.npm.taobao.org/@types/moment/download/@types/moment-2.13.0.tgz#604ebd189bc3bc34a1548689404e61a2a4aac896"
-  integrity sha1-YE69GJvDvDShVIaJQE5hoqSqyJY=
-  dependencies:
-    moment "*"
 
 "@types/mongodb@*", "@types/mongodb@^3.5.26":
   version "3.5.26"
@@ -1144,11 +1144,6 @@ mocha@^8.1.3:
     yargs-parser "13.1.2"
     yargs-unparser "1.6.1"
 
-moment@*:
-  version "2.27.0"
-  resolved "https://registry.npm.taobao.org/moment/download/moment-2.27.0.tgz?cache=0&sync_timestamp=1592843342961&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmoment%2Fdownload%2Fmoment-2.27.0.tgz#8bff4e3e26a236220dfe3e36de756b6ebaa0105d"
-  integrity sha1-i/9OPiaiNiIN/j423nVrbrqgEF0=
-
 mongodb@3.6.0:
   version "3.6.0"
   resolved "https://registry.npm.taobao.org/mongodb/download/mongodb-3.6.0.tgz?cache=0&sync_timestamp=1599050364246&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmongodb%2Fdownload%2Fmongodb-3.6.0.tgz#babd7172ec717e2ed3f85e079b3f1aa29dce4724"
@@ -1666,11 +1661,6 @@ util-deprecate@~1.0.1:
   version "1.0.2"
   resolved "https://registry.npm.taobao.org/util-deprecate/download/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
-
-uuid@^8.3.0:
-  version "8.3.0"
-  resolved "https://registry.npm.taobao.org/uuid/download/uuid-8.3.0.tgz?cache=0&sync_timestamp=1595884856212&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fuuid%2Fdownload%2Fuuid-8.3.0.tgz#ab738085ca22dc9a8c92725e459b1d507df5d6ea"
-  integrity sha1-q3OAhcoi3JqMknJeRZsdUH311uo=
 
 vary@^1.1.2:
   version "1.1.2"

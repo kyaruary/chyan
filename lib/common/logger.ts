@@ -1,5 +1,5 @@
 import log4js, { Configuration, configure, Appender } from "log4js";
-import { Injectable } from "../core/Injectable";
+import { Injectable } from "@chyan/ioc";
 
 @Injectable()
 export class ChyanLogger {

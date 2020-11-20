@@ -1,13 +1,15 @@
+import { Injectable } from "@chyan/ioc";
 import { config } from "dotenv";
 import { resolve } from "path";
-import { Injectable } from "../core/Injectable";
 
 @Injectable()
 export class EnvConfig {
   port = 8080;
   app_name = "Chyan.Application";
+  env_file = ".env";
+
   constructor() {
-    config({ path: resolve(process.cwd(), ".env") });
+    config({ path: resolve(process.cwd(), this.env_file) });
     const envConfig = process.env;
     const keys = Object.keys(envConfig);
     for (const key of keys) {

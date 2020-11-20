@@ -1,5 +1,5 @@
+import { attachMetadata, fetchMetadata, metaKeyIsExist } from "@chyan/ioc";
 import { RouteMethod } from "../../constant/RouteMethods";
-import { metaKeyIsExist, attachMetadata, fetchMetadata } from "../../core/MetadataStorage";
 import { RouteMetaKey } from "./metakey";
 
 export function createRouterMethod(method: RouteMethod, suffix: string) {
